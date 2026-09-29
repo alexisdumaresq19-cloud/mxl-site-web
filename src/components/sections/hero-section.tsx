@@ -2,6 +2,7 @@ import { ArrowRight, ChevronRight } from "lucide-react";
 
 import { MxlLogo } from "@/components/brand/mxl-logo";
 import { Button } from "@/components/ui/button";
+import { ContainerTextFlip } from "@/components/ui/container-text-flip";
 
 import { MagneticFrame } from "./magnetic-frame";
 import { ReportPreview } from "./report-preview";
@@ -35,7 +36,11 @@ export function HeroSection() {
             className="mt-7 text-[2.2rem] leading-[1.05] font-bold tracking-[-0.035em] text-balance text-white sm:mt-8 sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5rem]"
           >
             <span className="block animate-in duration-700 fade-in fill-mode-both blur-in-6 slide-in-from-bottom-3 delay-100">
-              Des estimations précises,
+              Des estimations{" "}
+              <ContainerTextFlip
+                words={["précises", "détaillées"]}
+                className="rounded-[0.16em] pt-[0.04em] pb-[0.1em] text-[length:inherit] tracking-[inherit] md:text-[length:inherit]"
+              />
             </span>
             <span className="block animate-in duration-700 fade-in fill-mode-both blur-in-6 slide-in-from-bottom-3 delay-200">
               signées&nbsp;
@@ -46,9 +51,9 @@ export function HeroSection() {
           </h1>
 
           <p className="mt-6 max-w-xl animate-in text-base leading-relaxed text-pretty text-neutral-400 duration-700 fade-in fill-mode-both slide-in-from-bottom-3 delay-300 sm:text-lg">
-            Après sinistre, ébénisterie ou rénovation&nbsp;: nos experts en
-            assurances et en sinistres produisent des estimations précises et
-            détaillées. Rapport précis garanti.
+            Estimateurs après sinistre, nos experts en assurances et en
+            sinistres évaluent chaque dommage et produisent des estimations
+            précises et détaillées. Rapport précis garanti.
           </p>
 
           <div className="mt-8 flex w-full animate-in flex-col items-center justify-center gap-3 duration-700 fade-in fill-mode-both slide-in-from-bottom-3 delay-500 sm:w-auto sm:flex-row">

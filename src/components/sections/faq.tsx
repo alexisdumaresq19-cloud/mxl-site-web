@@ -11,18 +11,17 @@ const faqs = [
   {
     question: "Qu'est-ce qu'une estimation après sinistre?",
     answer:
-      "C'est l'évaluation des dommages causés par un sinistre et des coûts associés à la réparation ou au remplacement des biens endommagés. Nos experts en assurances et en sinistres s'en servent pour déterminer le montant des indemnités à verser.",
+      "C'est l'évaluation des dommages causés par un sinistre et des coûts associés à la réparation ou au remplacement des biens endommagés. Elle sert à déterminer le montant des indemnités à verser pour couvrir ces dommages.",
   },
   {
-    question: "Que comprend une estimation en ébénisterie?",
+    question: "Qui réalise vos estimations?",
     answer:
-      "Elle évalue le coût des travaux nécessaires pour réparer ou remplacer des meubles endommagés ou défectueux : matériaux, main-d'œuvre et, le cas échéant, démolition et reconstruction.",
+      "Notre équipe expérimentée d'experts en assurances et en sinistres. Elle s'engage à fournir des estimations précises et détaillées des dommages causés par les sinistres.",
   },
   {
-    question:
-      "Estimez-vous aussi des projets de construction et de rénovation?",
+    question: "Quels biens évaluez-vous?",
     answer:
-      "Oui. Nous évaluons le coût total des travaux pour construire un bâtiment ou pour réparer et rénover un bâtiment existant, incluant les matériaux, la main-d'œuvre, la démolition et la reconstruction.",
+      "Les biens endommagés par le sinistre, du bâtiment aux armoires et aux meubles. Pour chacun, nous déterminons ce qu'il en coûte pour le réparer ou le remplacer et le remettre à son état antérieur.",
   },
   {
     question: "Quelles sont vos formations et certifications?",
@@ -32,7 +31,7 @@ const faqs = [
   {
     question: "Comment obtenir une estimation?",
     answer:
-      "Remplissez le formulaire de contact en décrivant votre sinistre ou votre projet. Notre équipe communiquera avec vous pour en discuter.",
+      "Remplissez le formulaire de contact en décrivant votre sinistre. Notre équipe communiquera avec vous pour en discuter.",
   },
 ];
 

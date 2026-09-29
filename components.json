@@ -27,6 +27,7 @@
       "headers": {
         "Authorization": "Bearer ${FORGEUI_API_TOKEN}"
       }
-    }
+    },
+    "@aceternity": "https://ui.aceternity.com/registry/{name}.json"
   }
 }

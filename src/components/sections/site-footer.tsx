@@ -35,8 +35,8 @@ export function SiteFooter() {
               <MxlLogo title="Estimation MXL" className="h-7 w-auto" />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-neutral-400">
-              Expert en estimation après sinistre, en ébénisterie et en
-              rénovation. Rapport précis garanti.
+              Estimateurs après sinistre. Des estimations précises et
+              détaillées, rapport précis garanti.
             </p>
           </div>
 

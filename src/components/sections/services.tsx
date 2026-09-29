@@ -1,36 +1,14 @@
 import type { ReactNode } from "react";
 
-import { services } from "@/lib/site";
+import { LayoutTextFlip } from "@/components/ui/layout-text-flip";
+import { WobbleCard } from "@/components/ui/wobble-card";
+import { services, type Service } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-import { SectionHeader } from "./section-header";
 import { ClaimSteps } from "./visuals/claim-steps";
-import { CostBreakdown } from "./visuals/cost-breakdown";
-import { ProjectTimeline } from "./visuals/project-timeline";
+import { EstimateSummary } from "./visuals/estimate-summary";
 
-const details: Record<
-  string,
-  { title: string; description: string; visual: ReactNode }
-> = {
-  "apres-sinistre": {
-    title: "Chaque dommage évalué, chaque coût justifié.",
-    description:
-      "Nous évaluons les dommages causés par le sinistre et déterminons les coûts de réparation ou de remplacement des biens endommagés, afin d'établir le montant des indemnités à verser.",
-    visual: <ClaimSteps />,
-  },
-  ebenisterie: {
-    title: "Réparer ou remplacer, au juste coût.",
-    description:
-      "Pour les meubles endommagés ou défectueux, nous évaluons le coût des travaux : matériaux, main-d'œuvre et, le cas échéant, démolition et reconstruction.",
-    visual: <CostBreakdown />,
-  },
-  construction: {
-    title: "Du plan aux finitions, le coût total.",
-    description:
-      "Pour construire un bâtiment, ou pour réparer et rénover un bâtiment existant, nous évaluons l'ensemble des coûts : matériaux, main-d'œuvre, démolition, reconstruction et autres coûts liés aux travaux.",
-    visual: <ProjectTimeline />,
-  },
-};
+const [evaluation, costs, report] = services;
 
 export function Services() {
   return (
@@ -39,59 +17,123 @@ export function Services() {
       aria-labelledby="services-title"
       className="mx-auto max-w-6xl px-5 py-20 sm:px-8 md:py-28"
     >
-      <SectionHeader
-        id="services-title"
-        eyebrow="Nos services"
-        title="Estimations précises et détaillées"
-        description="Après sinistre, en ébénisterie ou en construction, chaque estimation est détaillée poste par poste."
-        className="reveal"
-      />
+      <div className="mx-auto max-w-2xl reveal text-center">
+        <p className="text-sm font-medium text-mxl-blue-light">Nos services</p>
+        <h2
+          id="services-title"
+          className="mt-4 flex flex-col items-center justify-center gap-3 text-white sm:flex-row"
+        >
+          <LayoutTextFlip
+            text="Votre sinistre,"
+            words={["évalué", "chiffré", "documenté"]}
+          />
+        </h2>
+        <p className="mt-5 text-[15px] leading-relaxed text-balance text-neutral-400">
+          Estimateurs après sinistre, nous accompagnons chaque dossier, de
+          l&apos;évaluation des dommages jusqu&apos;au montant des indemnités.
+        </p>
+      </div>
 
-      <div className="mt-16 flex flex-col gap-20 md:mt-24 md:gap-28">
-        {services.map((service, index) => {
-          const detail = details[service.id];
-          const Icon = service.icon;
-          const visualFirst = index % 2 === 1;
-          return (
-            <article key={service.id} id={service.id}>
-              <div className="grid reveal grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-14">
-                <div className={cn("min-w-0", visualFirst && "md:order-2")}>
-                  <p className="flex items-center gap-2 text-sm font-medium text-mxl-blue-light">
-                    <Icon aria-hidden="true" className="size-4" />
-                    {service.title}
-                  </p>
-                  <h3 className="mt-3 text-2xl font-medium tracking-tight text-balance text-white sm:text-3xl">
-                    {detail.title}
-                  </h3>
-                  <p className="mt-4 max-w-md text-[15px] leading-relaxed text-neutral-400">
-                    {detail.description}
-                  </p>
-                  <a
-                    href="#contact"
-                    className="group mt-6 inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-mxl-blue-light focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
-                  >
-                    <span className="underline-offset-4 group-hover:underline">
-                      Demander une estimation
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className="transition-transform duration-200 group-hover:translate-x-0.5"
-                    >
-                      →
-                    </span>
-                  </a>
-                </div>
+      <div className="mt-14 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <CardSlot id={evaluation.id} className="lg:col-span-2">
+          <WobbleCard
+            containerClassName="h-full bg-[#1747c8] lg:min-h-[380px]"
+            className="px-6 pt-10 pb-0 sm:px-10 lg:pb-10"
+          >
+            <CardText
+              service={evaluation}
+              title="Chaque dommage évalué, chaque coût chiffré."
+              text="Nous évaluons les dommages causés par le sinistre et déterminons les coûts associés à la réparation ou au remplacement des biens endommagés."
+              className="lg:max-w-[44%]"
+            />
+            <div className="mt-8 -mb-12 overflow-hidden rounded-2xl bg-black shadow-[0_24px_48px_-20px_rgb(0_0_0/0.6)] ring-1 ring-white/15 sm:mx-auto sm:max-w-md lg:absolute lg:top-10 lg:-right-10 lg:mx-0 lg:mt-0 lg:mb-0 lg:w-[56%] lg:max-w-none">
+              <ClaimSteps />
+            </div>
+          </WobbleCard>
+        </CardSlot>
 
-                <div className={cn("min-w-0", visualFirst && "md:order-1")}>
-                  <div className="overflow-hidden rounded-2xl bg-black px-4 py-6 shadow-[0_20px_50px_-30px_rgb(0_0_0/0.8)] ring-1 ring-neutral-800/70 sm:px-6 sm:py-8">
-                    {detail.visual}
-                  </div>
-                </div>
-              </div>
-            </article>
-          );
-        })}
+        <CardSlot id={costs.id}>
+          <WobbleCard
+            containerClassName="h-full bg-neutral-900"
+            className="flex flex-col px-6 py-10 sm:px-10"
+          >
+            <CardText
+              service={costs}
+              title="Vos biens, remis à leur état antérieur."
+              text="Du bâtiment aux armoires et aux meubles, chaque bien endommagé est chiffré, qu'il faille le réparer ou le remplacer."
+            />
+            <div aria-hidden="true" className="mt-8 flex gap-2">
+              <span className="rounded-full px-3 py-1 text-sm text-white/85 ring-1 ring-white/20">
+                Réparer
+              </span>
+              <span className="rounded-full bg-mxl-blue px-3 py-1 text-sm text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.25)]">
+                Remplacer
+              </span>
+            </div>
+          </WobbleCard>
+        </CardSlot>
+
+        <CardSlot id={report.id} className="lg:col-span-3">
+          <WobbleCard
+            containerClassName="h-full bg-[#0b1d4f] lg:min-h-[340px]"
+            className="px-6 pt-10 pb-0 sm:px-10 lg:pb-10"
+          >
+            <CardText
+              service={report}
+              title="Un rapport précis. Garanti."
+              text="Notre rapport précis et détaillé sert à déterminer le montant des indemnités à verser pour couvrir les dommages causés par le sinistre."
+              className="lg:max-w-[42%]"
+            />
+            <div className="mt-6 -mb-6 sm:mx-auto sm:max-w-md lg:absolute lg:top-1/2 lg:right-12 lg:mx-0 lg:mt-0 lg:mb-0 lg:w-[40%] lg:-translate-y-1/2">
+              <EstimateSummary />
+            </div>
+          </WobbleCard>
+        </CardSlot>
       </div>
     </section>
+  );
+}
+
+function CardText({
+  service,
+  title,
+  text,
+  className,
+}: {
+  service: Service;
+  title: string;
+  text: string;
+  className?: string;
+}) {
+  const Icon = service.icon;
+  return (
+    <div className={cn("max-w-sm", className)}>
+      <p className="flex items-center gap-2 text-sm font-medium text-white/85">
+        <Icon aria-hidden="true" className="size-4 shrink-0" />
+        {service.title}
+      </p>
+      <h3 className="mt-3 text-left text-xl font-semibold tracking-[-0.015em] text-balance text-white md:text-2xl lg:text-3xl">
+        {title}
+      </h3>
+      <p className="mt-4 text-left text-base/6 text-white/85">{text}</p>
+    </div>
+  );
+}
+
+// The anchor target stays untransformed while only its content animates in,
+// so menu links scroll to the right position.
+function CardSlot({
+  id,
+  className,
+  children,
+}: {
+  id: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div id={id} className={className}>
+      <div className="h-full reveal">{children}</div>
+    </div>
   );
 }

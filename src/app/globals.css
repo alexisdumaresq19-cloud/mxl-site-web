@@ -51,7 +51,15 @@
 }
 
 @theme {
+  --animate-marquee: marquee 36s linear infinite;
   --animate-stamp: stamp 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) 0.7s both;
+
+  /* The track holds its items twice, so -50% lands on an identical frame. */
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
 
   @keyframes stamp {
     0% {

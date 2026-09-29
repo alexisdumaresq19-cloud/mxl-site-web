@@ -1,4 +1,9 @@
-import { Armchair, HardHat, ShieldCheck, type LucideIcon } from "lucide-react";
+import {
+  Calculator,
+  FileCheck2,
+  SearchCheck,
+  type LucideIcon,
+} from "lucide-react";
 
 export const FACEBOOK_URL = "https://www.facebook.com/estimationmxl/";
 
@@ -9,39 +14,41 @@ export type Service = {
   icon: LucideIcon;
 };
 
+// Estimation MXL are after-claim estimators: each service is a step of the
+// same after-claim estimate, worded from estimationmxl.com.
 export const services: Service[] = [
   {
-    id: "apres-sinistre",
-    title: "Après sinistre",
-    summary: "Dommages évalués et coûts de réparation chiffrés.",
-    icon: ShieldCheck,
+    id: "evaluation-des-dommages",
+    title: "Évaluation des dommages",
+    summary: "Les dommages causés par le sinistre, évalués un à un.",
+    icon: SearchCheck,
   },
   {
-    id: "ebenisterie",
-    title: "Ébénisterie",
-    summary: "Meubles à réparer ou à remplacer, au juste coût.",
-    icon: Armchair,
+    id: "couts-de-reparation",
+    title: "Coûts de réparation ou de remplacement",
+    summary: "Ce qu'il faut pour remettre vos biens à leur état antérieur.",
+    icon: Calculator,
   },
   {
-    id: "construction",
-    title: "Construction et rénovation",
-    summary: "Bâtiments neufs, réparations et rénovations.",
-    icon: HardHat,
+    id: "rapport-et-indemnites",
+    title: "Rapport et indemnités",
+    summary: "Un rapport précis pour établir les indemnités à verser.",
+    icon: FileCheck2,
   },
 ];
 
-export const certifications = [
+export type Certification = {
+  name: string;
+  detail: string;
+  /** Logo in /public (e.g. "/certifications/iicrc.svg"), shown in white. */
+  logo?: { src: string; width: number; height: number };
+};
+
+export const certifications: Certification[] = [
   { name: "IICRC WRT", detail: "Certification" },
   { name: "Xactimate", detail: "Formation avancée" },
   { name: "Symbility", detail: "Formation" },
   { name: "CNESST", detail: "Formation amiante" },
-];
-
-export const projectTypes = [
-  { value: "apres-sinistre", label: "Après sinistre" },
-  { value: "ebenisterie", label: "Ébénisterie" },
-  { value: "construction", label: "Construction ou rénovation" },
-  { value: "autre", label: "Autre" },
 ];
 
 export const navigation = [

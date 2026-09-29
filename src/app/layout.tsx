@@ -14,11 +14,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Estimation MXL | Expert en estimation après sinistre",
+    default: "Estimation MXL | Estimateurs après sinistre",
     template: "%s | Estimation MXL",
   },
   description:
-    "Estimations précises et détaillées après sinistre, en ébénisterie, en construction et en rénovation. Rapport précis garanti.",
+    "Estimateurs après sinistre : évaluation des dommages et estimations précises et détaillées des coûts de réparation ou de remplacement. Rapport précis garanti.",
 };
 
 export const viewport: Viewport = {

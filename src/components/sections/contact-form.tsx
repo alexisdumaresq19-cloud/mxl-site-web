@@ -1,14 +1,14 @@
 "use client";
 
 import { useActionState, type ReactNode } from "react";
-import { ArrowRight, ChevronDown, CircleCheck } from "lucide-react";
+import { ArrowRight, CircleCheck } from "lucide-react";
 
 import { sendContactRequest, type ContactState } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { FACEBOOK_URL, projectTypes } from "@/lib/site";
+import { FACEBOOK_URL } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const initialState: ContactState = { status: "idle" };
@@ -36,7 +36,7 @@ export function ContactForm() {
           Merci, votre demande est envoyée.
         </p>
         <p className="mt-2 max-w-sm text-sm text-neutral-400">
-          Notre équipe communiquera avec vous pour discuter de votre projet.
+          Notre équipe communiquera avec vous au sujet de votre sinistre.
         </p>
       </div>
     );
@@ -47,7 +47,12 @@ export function ContactForm() {
 
   return (
     <form action={formAction} className="grid gap-5 sm:grid-cols-2">
-      <Field id="contact-name" label="Nom complet" error={errors.name}>
+      <Field
+        id="contact-name"
+        label="Nom complet"
+        error={errors.name}
+        className="sm:col-span-2"
+      >
         <Input
           id="contact-name"
           name="name"
@@ -96,44 +101,6 @@ export function ContactForm() {
       </Field>
 
       <Field
-        id="contact-type"
-        label="Type de projet"
-        error={errors.projectType}
-      >
-        <div className="relative">
-          {/* Remount on each result: React only applies a select's defaultValue on mount. */}
-          <select
-            key={values.projectType ?? ""}
-            id="contact-type"
-            name="projectType"
-            required
-            defaultValue={values.projectType ?? ""}
-            aria-invalid={errors.projectType ? true : undefined}
-            aria-describedby={
-              errors.projectType ? "contact-type-error" : undefined
-            }
-            className={cn(
-              "w-full appearance-none border border-white/10 pr-10 text-white outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive",
-              fieldClass,
-            )}
-          >
-            <option value="" disabled>
-              Choisir…
-            </option>
-            {projectTypes.map((type) => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
-            ))}
-          </select>
-          <ChevronDown
-            aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 text-neutral-500"
-          />
-        </div>
-      </Field>
-
-      <Field
         id="contact-message"
         label="Votre demande"
         error={errors.message}
@@ -146,7 +113,7 @@ export function ContactForm() {
           minLength={10}
           maxLength={5000}
           rows={5}
-          placeholder="Décrivez votre sinistre ou votre projet."
+          placeholder="Décrivez votre sinistre et les dommages constatés."
           defaultValue={values.message}
           aria-invalid={errors.message ? true : undefined}
           aria-describedby={

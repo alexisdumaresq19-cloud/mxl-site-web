@@ -1,8 +1,8 @@
 # Estimation MXL — nouveau site web
 
-Refonte du site [estimationmxl.com](https://estimationmxl.com/) : une page d'accueil complète en français, sur fond noir, inspirée du template ForgeUI **Cardinal**.
+Refonte du site [estimationmxl.com](https://estimationmxl.com/) pour **Estimation MXL, estimateurs après sinistre** : une page d'accueil complète en français, sur fond noir, inspirée du template ForgeUI **Cardinal**.
 
-**Stack** : Next.js 16 (App Router, Turbopack) · React 19 · Tailwind CSS v4 · shadcn/ui · [ForgeUI](https://forgeui.in) · Motion.
+**Stack** : Next.js 16 (App Router, Turbopack) · React 19 · Tailwind CSS v4 · shadcn/ui · [ForgeUI](https://forgeui.in) · [Aceternity UI](https://ui.aceternity.com) · Motion.
 
 ## Démarrer
 
@@ -22,18 +22,18 @@ Puis ouvrir <http://localhost:3000>.
 
 ## Page d'accueil
 
-| Section        | Contenu                                                                                                  |
-| -------------- | -------------------------------------------------------------------------------------------------------- |
-| En-tête        | Logo, méga-menu « Services », liens d'ancre, Facebook, bouton « Demander une estimation », menu mobile   |
-| Hero           | Titre « Des estimations précises, signées MXL » (tuile tampon), aperçu de rapport d'estimation (exemple) |
-| Certifications | IICRC WRT, Xactimate, Symbility, CNESST                                                                  |
-| Services       | Après sinistre, ébénisterie, construction et rénovation, chacun avec son illustration                    |
-| À propos       | Texte « Notre expertise » et chiffres animés (5+ ans, 100+ clients, 2 500+ projets)                      |
-| FAQ            | Accordéon, réponses tirées de l'ancien site                                                              |
-| Contact        | Formulaire de demande d'estimation (voir plus bas)                                                       |
-| Pied de page   | Liens, Facebook, grand logo MXL en contour                                                               |
+| Section                      | Contenu                                                                                                 |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------- |
+| En-tête                      | Logo, méga-menu « Services », liens d'ancre, Facebook, bouton « Demander une estimation », menu mobile  |
+| Hero                         | « Des estimations [précises / détaillées] signées MXL » (mot animé + tuile tampon), aperçu de rapport   |
+| Formations et certifications | Bande de logos qui défile (IICRC WRT, Xactimate, Symbility, CNESST)                                     |
+| Services                     | « Votre sinistre, [évalué / chiffré / documenté] » et 3 cartes : dommages, coûts, rapport et indemnités |
+| À propos                     | Texte « Notre expertise » et chiffres animés (5+ ans, 100+ clients, 2 500+ projets)                     |
+| FAQ                          | Accordéon, réponses tirées de l'ancien site                                                             |
+| Contact                      | Formulaire de demande d'estimation (voir plus bas)                                                      |
+| Pied de page                 | Liens, Facebook, grand logo MXL en contour                                                              |
 
-Textes, statistiques et certifications viennent de l'ancien site. Les montants, dates et pourcentages des illustrations sont des **exemples** (marqués comme tels) : à remplacer par de vraies données si MXL le souhaite.
+Textes, statistiques et certifications viennent de l'ancien site. Les montants et dates des illustrations sont des **exemples** (marqués comme tels) : à remplacer par de vraies données si MXL le souhaite.
 
 Les animations sont en CSS et Motion ; elles sont désactivées si l'utilisateur a activé « réduire les animations ».
 
@@ -45,10 +45,19 @@ src/app/actions.ts                  Server Action du formulaire de contact
 src/app/not-found.tsx               page 404
 src/app/globals.css                 thème ForgeUI + couleurs MXL + utilitaires
 src/lib/site.ts                     contenu partagé (services, certifications, navigation)
+src/components/ui/                  composants shadcn et Aceternity
 src/components/sections/            sections de la page et leurs illustrations
 src/components/brand/mxl-logo.tsx   logo MXL vectoriel (SVG)
 public/brand/                       logo original (PNG) et version SVG
 ```
+
+## Logos des formations et certifications
+
+En attendant les logos, la bande affiche le nom de chaque certification. Pour ajouter un logo :
+
+1. Déposer le fichier dans `public/certifications/`, de préférence en **SVG** ou en **PNG transparent** (le logo est affiché en blanc ; un fond blanc donnerait un rectangle blanc).
+2. Dans `src/lib/site.ts`, ajouter `logo` à la certification, par exemple :
+   `{ name: "IICRC WRT", detail: "Certification", logo: { src: "/certifications/iicrc.svg", width: 120, height: 40 } }`
 
 ## Formulaire de contact
 
@@ -62,15 +71,25 @@ Variables (voir `.env.example`), à ajouter dans `.env.local` en local et dans V
 | `CONTACT_TO_EMAIL`   | Adresse qui reçoit les demandes                |
 | `CONTACT_FROM_EMAIL` | Expéditeur sur un domaine vérifié (facultatif) |
 
-## ForgeUI
+## Composants
 
-Le registre `@forgeui` est configuré dans `components.json`. Les blocs **Pro** (dont `hero-section12`) demandent un jeton :
+**Aceternity UI** (gratuits), installés avec `npx shadcn@latest add @aceternity/…` :
+
+| Composant             | Utilisation                   |
+| --------------------- | ----------------------------- |
+| `container-text-flip` | Mot animé du titre de la hero |
+| `layout-text-flip`    | Titre animé de « Services »   |
+| `wobble-card`         | Cartes de « Services »        |
+
+Adaptations faites dans `src/components/ui/` : import de `cn` corrigé, balises `span` pour pouvoir placer le texte animé dans un titre (sinon erreur d'hydratation), premier mot visible dès le rendu serveur, pas de défilement des mots si l'utilisateur réduit les animations, `id` accepté par `WobbleCard`, texture `public/noise.webp` ajoutée. Les fichiers de démo ont été retirés (contenu fictif).
+
+**ForgeUI** : le registre `@forgeui` est configuré dans `components.json`. `hero-section12` et `logo-cloud02` sont des blocs **Pro** : la hero et la bande de logos sont des reproductions écrites pour MXL. Pour installer les blocs officiels :
 
 1. Générer un jeton sur <https://forgeui.in/docs/cli> (compte ForgeUI Pro requis).
 2. L'ajouter dans `.env.local` : `FORGEUI_API_TOKEN=...` (jamais commité).
-3. Installer un bloc : `npx shadcn@latest add @forgeui/hero-section12`
+3. Installer un bloc : `npx shadcn@latest add @forgeui/logo-cloud02`
 
-**Licence du template Cardinal** : il peut servir pour des projets clients, mais son code source ne doit pas être redistribué ni partagé. Ce dépôt étant public, le site reprend le style de Cardinal avec du code écrit pour MXL, sans copier les fichiers du template. Pour y coller des composants du template tels quels, passer d'abord le dépôt en privé.
+**Licences** : le template Cardinal et les blocs ForgeUI Pro peuvent servir pour des projets clients, mais leur code source ne doit pas être partagé publiquement. Ce dépôt étant public, le site reprend leur style avec du code écrit pour MXL. Pour y ajouter des fichiers Pro tels quels, passer d'abord le dépôt en privé.
 
 ## Déployer
 

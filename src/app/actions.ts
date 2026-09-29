@@ -1,8 +1,6 @@
 "use server";
 
-import { projectTypes } from "@/lib/site";
-
-type ContactField = "name" | "email" | "phone" | "projectType" | "message";
+type ContactField = "name" | "email" | "phone" | "message";
 
 export type ContactState = {
   status: "idle" | "success" | "error";
@@ -28,7 +26,6 @@ export async function sendContactRequest(
     name: singleLine(read("name")),
     email: read("email"),
     phone: singleLine(read("phone")),
-    projectType: read("projectType"),
     message: read("message"),
   };
 
@@ -42,16 +39,10 @@ export async function sendContactRequest(
   if (values.phone.length > 30) {
     fieldErrors.phone = "Ce numéro est trop long.";
   }
-  const projectType = projectTypes.find(
-    (type) => type.value === values.projectType,
-  );
-  if (!projectType) {
-    fieldErrors.projectType = "Choisissez un type de projet.";
-  }
   if (values.message.length < 10 || values.message.length > 5000) {
     fieldErrors.message = "Décrivez votre demande en au moins 10 caractères.";
   }
-  if (!projectType || Object.keys(fieldErrors).length > 0) {
+  if (Object.keys(fieldErrors).length > 0) {
     return {
       status: "error",
       reason: "invalid",
@@ -88,12 +79,11 @@ export async function sendContactRequest(
           "Site Estimation MXL <onboarding@resend.dev>",
         to: [recipient],
         reply_to: values.email,
-        subject: `Demande d'estimation : ${projectType.label} (${values.name})`,
+        subject: `Demande d'estimation après sinistre : ${values.name}`,
         text: [
           `Nom : ${values.name}`,
           `Courriel : ${values.email}`,
           `Téléphone : ${values.phone || "non fourni"}`,
-          `Type de projet : ${projectType.label}`,
           "",
           values.message,
         ].join("\n"),

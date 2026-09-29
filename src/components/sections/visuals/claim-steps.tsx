@@ -1,27 +1,28 @@
 import {
-  Calculator,
-  Camera,
   Check,
-  ClipboardCheck,
   FileText,
-  Send,
+  Hammer,
+  HandCoins,
+  RefreshCw,
+  SearchCheck,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
+// The after-claim estimate as described on estimationmxl.com.
 const steps = [
-  { label: "Inspection des lieux", icon: ClipboardCheck, state: "done" },
-  { label: "Relevé des dommages", icon: Camera, state: "done" },
-  { label: "Estimation des coûts", icon: Calculator, state: "active" },
+  { label: "Évaluation des dommages", icon: SearchCheck, state: "done" },
+  { label: "Coûts de réparation", icon: Hammer, state: "done" },
+  { label: "Coûts de remplacement", icon: RefreshCw, state: "active" },
   { label: "Rapport détaillé", icon: FileText, state: "todo" },
-  { label: "Remise du rapport", icon: Send, state: "todo" },
+  { label: "Montant des indemnités", icon: HandCoins, state: "todo" },
 ] as const;
 
 export function ClaimSteps() {
   return (
     <div
       role="img"
-      aria-label="Étapes d'une estimation après sinistre : inspection, relevé des dommages, estimation des coûts, rapport détaillé et remise du rapport"
+      aria-label="Étapes d'une estimation après sinistre : évaluation des dommages, coûts de réparation et de remplacement, rapport détaillé et montant des indemnités"
       className="@container"
     >
       <div className="relative aspect-[460/300] w-full scaled-canvas overflow-hidden [--canvas-width:460]">

@@ -36,11 +36,11 @@ export function ContactSection() {
             id="contact-title"
             className="mt-2 bg-linear-to-br from-white via-white to-white/40 bg-clip-text pb-1 text-3xl font-semibold tracking-tight text-balance text-transparent md:text-4xl"
           >
-            Besoin d&apos;une estimation précise?
+            Besoin d&apos;une estimation après sinistre?
           </h2>
           <p className="mt-3 max-w-md text-[15px] leading-relaxed text-neutral-400">
-            Décrivez votre sinistre ou votre projet en quelques lignes. Notre
-            équipe communiquera avec vous pour en discuter.
+            Décrivez votre sinistre en quelques lignes. Notre équipe
+            communiquera avec vous pour en discuter.
           </p>
 
           <ul className="mt-10 space-y-5">
