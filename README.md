@@ -26,12 +26,12 @@ Puis ouvrir <http://localhost:3000>.
 | ---------------------------- | ------------------------------------------------------------------------------------------------------- |
 | En-tête                      | Logo, méga-menu « Services », liens d'ancre, Facebook, bouton « Demander une estimation », menu mobile  |
 | Hero                         | « Des estimations [précises / détaillées] signées MXL » (mot animé + tuile tampon), aperçu de rapport   |
-| Formations et certifications | Bande de logos qui défile (IICRC WRT, Xactimate, Symbility, CNESST)                                     |
+| Formations et certifications | « Un sinistre à estimer? », bouton vers le contact et bande qui défile, style ForgeUI call-to-action03  |
 | Services                     | « Votre sinistre, [évalué / chiffré / documenté] » et 3 cartes : dommages, coûts, rapport et indemnités |
 | À propos                     | Texte « Notre expertise » et chiffres animés (5+ ans, 100+ clients, 2 500+ projets)                     |
 | FAQ                          | Accordéon, réponses tirées de l'ancien site                                                             |
 | Contact                      | « Parlons-en. » et formulaire de demande d'estimation, style ForgeUI contact04 (voir plus bas)          |
-| Pied de page                 | Liens, Facebook, grand logo MXL en contour                                                              |
+| Pied de page                 | Liens, Facebook, signature « MXL » écrite à la main (animée), grand logo MXL en contour                 |
 
 Textes, statistiques et certifications viennent de l'ancien site. Les montants et dates des illustrations sont des **exemples** (marqués comme tels) : à remplacer par de vraies données si MXL le souhaite.
 
@@ -48,6 +48,7 @@ src/lib/site.ts                     contenu partagé (services, certifications, 
 src/components/ui/                  composants shadcn et Aceternity
 src/components/sections/            sections de la page et leurs illustrations
 src/components/brand/mxl-logo.tsx   logo MXL vectoriel (SVG)
+src/components/brand/mxl-signature.ts  tracé de la signature « MXL »
 public/brand/                       logo original (PNG) et version SVG
 ```
 
@@ -85,7 +86,9 @@ Variables (voir `.env.example`), à ajouter dans `.env.local` en local et dans V
 
 Adaptations faites dans `src/components/ui/` : import de `cn` corrigé, balises `span` pour pouvoir placer le texte animé dans un titre (sinon erreur d'hydratation), premier mot visible dès le rendu serveur, pas de défilement des mots si l'utilisateur réduit les animations, texture `public/noise.webp` ajoutée. Les fichiers de démo ont été retirés (contenu fictif).
 
-**ForgeUI** : le registre `@forgeui` est configuré dans `components.json`. `hero-section12`, `logo-cloud02` et `contact04` sont des blocs **Pro** : la hero, la bande de logos et la section contact sont des reproductions écrites pour MXL. Pour installer les blocs officiels :
+**ui-lab** (licence MIT) : la signature du composant [`footer-signature`](https://github.com/xevrion/ui-lab/blob/main/src/lab/components/footer-signature.tsx), sans le reste de son footer, est dans `src/components/ui/signature.tsx` (avis de licence en tête du fichier). Elle s'écrit quand elle est entièrement visible, ralentit dans les boucles et s'affiche d'un coup si l'utilisateur réduit les animations. Le tracé « MXL » a été dessiné pour MXL.
+
+**ForgeUI** : le registre `@forgeui` est configuré dans `components.json`. `hero-section12`, `logo-cloud02`, `call-to-action03` et `contact04` sont des blocs **Pro** : la hero, la section formations et certifications et la section contact sont des reproductions écrites pour MXL. Pour installer les blocs officiels :
 
 1. Générer un jeton sur <https://forgeui.in/docs/cli> (compte ForgeUI Pro requis).
 2. L'ajouter dans `.env.local` : `FORGEUI_API_TOKEN=...` (jamais commité).

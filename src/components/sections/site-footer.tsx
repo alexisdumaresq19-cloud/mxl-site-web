@@ -2,6 +2,11 @@ import Link from "next/link";
 import { FaFacebookF } from "react-icons/fa6";
 
 import { MXL_LOGO_PATH, MxlLogo } from "@/components/brand/mxl-logo";
+import {
+  MXL_SIGNATURE,
+  MXL_SIGNATURE_VIEWBOX,
+} from "@/components/brand/mxl-signature";
+import { Signature } from "@/components/ui/signature";
 import { FACEBOOK_URL, navigation, services } from "@/lib/site";
 
 const linkClass =
@@ -38,6 +43,12 @@ export function SiteFooter() {
               Estimateurs après sinistre. Des estimations précises et
               détaillées, rapport précis garanti.
             </p>
+            <Signature
+              signature={MXL_SIGNATURE}
+              viewBox={MXL_SIGNATURE_VIEWBOX}
+              label="Signature d'Estimation MXL"
+              className="mt-5 h-16 w-auto text-mxl-blue-light"
+            />
           </div>
 
           <nav
