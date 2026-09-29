@@ -30,7 +30,7 @@ Puis ouvrir <http://localhost:3000>.
 | Services                     | « Votre sinistre, [évalué / chiffré / documenté] » et 3 cartes : dommages, coûts, rapport et indemnités |
 | À propos                     | Texte « Notre expertise » et chiffres animés (5+ ans, 100+ clients, 2 500+ projets)                     |
 | FAQ                          | Accordéon, réponses tirées de l'ancien site                                                             |
-| Contact                      | Formulaire de demande d'estimation (voir plus bas)                                                      |
+| Contact                      | « Parlons-en. » et formulaire de demande d'estimation, style ForgeUI contact04 (voir plus bas)          |
 | Pied de page                 | Liens, Facebook, grand logo MXL en contour                                                              |
 
 Textes, statistiques et certifications viennent de l'ancien site. Les montants et dates des illustrations sont des **exemples** (marqués comme tels) : à remplacer par de vraies données si MXL le souhaite.
@@ -61,7 +61,7 @@ En attendant les logos, la bande affiche le nom de chaque certification. Pour aj
 
 ## Formulaire de contact
 
-Les demandes sont envoyées par courriel via [Resend](https://resend.com). Tant que les variables ne sont pas définies, le formulaire affiche un message invitant à écrire sur Facebook (rien n'est perdu en silence).
+Champs : prénom, nom, courriel, téléphone (facultatif) et description du sinistre. Les demandes sont envoyées par courriel via [Resend](https://resend.com). Tant que les variables ne sont pas définies, le formulaire affiche un message invitant à écrire sur Facebook (rien n'est perdu en silence).
 
 Variables (voir `.env.example`), à ajouter dans `.env.local` en local et dans Vercel > Settings > Environment Variables :
 
@@ -70,6 +70,8 @@ Variables (voir `.env.example`), à ajouter dans `.env.local` en local et dans V
 | `RESEND_API_KEY`     | Clé API Resend                                 |
 | `CONTACT_TO_EMAIL`   | Adresse qui reçoit les demandes                |
 | `CONTACT_FROM_EMAIL` | Expéditeur sur un domaine vérifié (facultatif) |
+
+**Politique de confidentialité** : le site n'en a pas encore. Au Québec, la Loi 25 en exige une dès qu'un site recueille des renseignements personnels (ce formulaire en recueille). Une fois la page publiée, ajouter son lien sous le formulaire, à côté de la mention « Ces renseignements servent à répondre à votre demande. ».
 
 ## Composants
 
@@ -81,9 +83,9 @@ Variables (voir `.env.example`), à ajouter dans `.env.local` en local et dans V
 | `layout-text-flip`    | Titre animé de « Services »   |
 | `wobble-card`         | Cartes de « Services »        |
 
-Adaptations faites dans `src/components/ui/` : import de `cn` corrigé, balises `span` pour pouvoir placer le texte animé dans un titre (sinon erreur d'hydratation), premier mot visible dès le rendu serveur, pas de défilement des mots si l'utilisateur réduit les animations, `id` accepté par `WobbleCard`, texture `public/noise.webp` ajoutée. Les fichiers de démo ont été retirés (contenu fictif).
+Adaptations faites dans `src/components/ui/` : import de `cn` corrigé, balises `span` pour pouvoir placer le texte animé dans un titre (sinon erreur d'hydratation), premier mot visible dès le rendu serveur, pas de défilement des mots si l'utilisateur réduit les animations, texture `public/noise.webp` ajoutée. Les fichiers de démo ont été retirés (contenu fictif).
 
-**ForgeUI** : le registre `@forgeui` est configuré dans `components.json`. `hero-section12` et `logo-cloud02` sont des blocs **Pro** : la hero et la bande de logos sont des reproductions écrites pour MXL. Pour installer les blocs officiels :
+**ForgeUI** : le registre `@forgeui` est configuré dans `components.json`. `hero-section12`, `logo-cloud02` et `contact04` sont des blocs **Pro** : la hero, la bande de logos et la section contact sont des reproductions écrites pour MXL. Pour installer les blocs officiels :
 
 1. Générer un jeton sur <https://forgeui.in/docs/cli> (compte ForgeUI Pro requis).
 2. L'ajouter dans `.env.local` : `FORGEUI_API_TOKEN=...` (jamais commité).

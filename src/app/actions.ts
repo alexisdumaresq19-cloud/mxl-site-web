@@ -1,6 +1,6 @@
 "use server";
 
-type ContactField = "name" | "email" | "phone" | "message";
+type ContactField = "firstName" | "lastName" | "email" | "phone" | "message";
 
 export type ContactState = {
   status: "idle" | "success" | "error";
@@ -23,15 +23,19 @@ export async function sendContactRequest(
   if (read("website")) return { status: "success" };
 
   const values = {
-    name: singleLine(read("name")),
+    firstName: singleLine(read("firstName")),
+    lastName: singleLine(read("lastName")),
     email: read("email"),
     phone: singleLine(read("phone")),
     message: read("message"),
   };
 
   const fieldErrors: ContactState["fieldErrors"] = {};
-  if (values.name.length < 2 || values.name.length > 100) {
-    fieldErrors.name = "Indiquez votre nom.";
+  if (!values.firstName || values.firstName.length > 60) {
+    fieldErrors.firstName = "Indiquez votre prénom.";
+  }
+  if (!values.lastName || values.lastName.length > 60) {
+    fieldErrors.lastName = "Indiquez votre nom.";
   }
   if (!EMAIL_PATTERN.test(values.email) || values.email.length > 200) {
     fieldErrors.email = "Indiquez une adresse courriel valide.";
@@ -40,7 +44,7 @@ export async function sendContactRequest(
     fieldErrors.phone = "Ce numéro est trop long.";
   }
   if (values.message.length < 10 || values.message.length > 5000) {
-    fieldErrors.message = "Décrivez votre demande en au moins 10 caractères.";
+    fieldErrors.message = "Décrivez votre sinistre en au moins 10 caractères.";
   }
   if (Object.keys(fieldErrors).length > 0) {
     return {
@@ -66,6 +70,7 @@ export async function sendContactRequest(
     };
   }
 
+  const fullName = `${values.firstName} ${values.lastName}`;
   try {
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -79,9 +84,9 @@ export async function sendContactRequest(
           "Site Estimation MXL <onboarding@resend.dev>",
         to: [recipient],
         reply_to: values.email,
-        subject: `Demande d'estimation après sinistre : ${values.name}`,
+        subject: `Demande d'estimation après sinistre : ${fullName}`,
         text: [
-          `Nom : ${values.name}`,
+          `Nom : ${fullName}`,
           `Courriel : ${values.email}`,
           `Téléphone : ${values.phone || "non fourni"}`,
           "",
