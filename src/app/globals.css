@@ -48,7 +48,6 @@
   --color-mxl-blue: var(--mxl-blue);
   --color-mxl-blue-hover: var(--mxl-blue-hover);
   --color-mxl-blue-light: var(--mxl-blue-light);
-  --color-mxl-ink: var(--mxl-ink);
 }
 
 @theme {
@@ -152,7 +151,6 @@
   --mxl-blue: #1b5df2;
   --mxl-blue-hover: #3570f5;
   --mxl-blue-light: #6b9bff;
-  --mxl-ink: #06080d;
 }
 
 :root,
@@ -172,16 +170,39 @@
   }
 }
 
-/* Graph-paper grid: 64px major lines over a 16px minor grid. */
-@utility bg-blueprint {
-  background-image:
-    linear-gradient(to right, var(--blueprint-major) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--blueprint-major) 1px, transparent 1px),
-    linear-gradient(to right, var(--blueprint-minor) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--blueprint-minor) 1px, transparent 1px);
-  background-size:
-    64px 64px,
-    64px 64px,
-    16px 16px,
-    16px 16px;
+/*
+ * Fixed-size illustration that scales with its container: 1 --u is one design
+ * pixel of a canvas --canvas-width px wide. Spacing, text and radius utilities
+ * inside resolve against --u, so the layout stays identical at every width.
+ * The parent must be an inline-size container (the `@container` class).
+ */
+@utility scaled-canvas {
+  --u: calc(100cqw / var(--canvas-width, 1100));
+  --spacing: calc(var(--u) * 4);
+  --text-xs: calc(var(--u) * 12);
+  --text-sm: calc(var(--u) * 14);
+  --text-base: calc(var(--u) * 16);
+  --text-lg: calc(var(--u) * 18);
+  --text-xl: calc(var(--u) * 20);
+  --text-2xl: calc(var(--u) * 24);
+  --radius: calc(var(--u) * 10);
+  font-size: var(--text-sm);
+}
+
+/* Fade sections in as they scroll into view, where scroll-driven animations exist. */
+@utility reveal {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 200px;
+    }
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
 }

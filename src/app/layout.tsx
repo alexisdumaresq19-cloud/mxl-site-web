@@ -13,13 +13,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Estimation MXL | Expert en estimation après sinistre",
+  title: {
+    default: "Estimation MXL | Expert en estimation après sinistre",
+    template: "%s | Estimation MXL",
+  },
   description:
-    "Estimations précises et détaillées après sinistre, en ébénisterie et en rénovation. Rapport précis garanti.",
+    "Estimations précises et détaillées après sinistre, en ébénisterie, en construction et en rénovation. Rapport précis garanti.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#06080d",
+  themeColor: "#000000",
   colorScheme: "dark",
 };
 
@@ -27,9 +30,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="fr-CA"
-      className={`${geistSans.variable} ${geistMono.variable} dark h-full scroll-smooth antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} dark h-full scroll-pt-20 motion-safe:scroll-smooth antialiased`}
     >
-      <body className="min-h-full bg-mxl-ink">{children}</body>
+      <body className="min-h-full bg-black">{children}</body>
     </html>
   );
 }
