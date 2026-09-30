@@ -125,7 +125,7 @@ export function SiteHeader() {
             <MxlLogo title="Estimation MXL" className="h-6 w-auto" />
           </Link>
 
-          <nav aria-label="Navigation principale" className="hidden md:block">
+          <nav aria-label="Navigation principale" className="hidden lg:block">
             <ul className="flex items-center gap-1">
               <li>
                 <button
@@ -219,7 +219,7 @@ export function SiteHeader() {
               aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
               onClick={() => setMobileOpen((open) => !open)}
               className={cn(
-                "flex size-9 items-center justify-center rounded-lg text-neutral-300 transition-colors hover:text-white md:hidden",
+                "flex size-9 items-center justify-center rounded-lg text-neutral-300 transition-colors hover:text-white lg:hidden",
                 focusRing,
               )}
             >
@@ -238,7 +238,7 @@ export function SiteHeader() {
           <motion.div
             id="menu-mobile"
             {...panelMotion}
-            className="absolute inset-x-0 top-full overflow-hidden border-b border-white/8 bg-black md:hidden"
+            className="absolute inset-x-0 top-full overflow-hidden border-b border-white/8 bg-black lg:hidden"
           >
             <nav aria-label="Navigation mobile" className="px-5 pt-2 pb-6">
               <p className="px-2 pt-2 text-xs font-medium tracking-wide text-neutral-500 uppercase">

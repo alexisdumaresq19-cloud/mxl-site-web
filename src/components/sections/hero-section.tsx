@@ -42,7 +42,7 @@ export function HeroSection() {
               <span className="mt-[0.08em] mb-[0.3em] block leading-none sm:my-0 sm:inline-block sm:align-[0.18em]">
                 <ContainerTextFlip
                   words={["précises", "détaillées"]}
-                  className="rounded-full px-[0.55em] pt-[0.18em] pb-[0.26em] text-[0.46em] tracking-[-0.02em] md:text-[0.46em]"
+                  className="rounded-[0.33em] px-[0.5em] pt-[0.14em] pb-[0.22em] text-[0.6em] tracking-[-0.025em] md:text-[0.6em]"
                 />
               </span>
             </span>
