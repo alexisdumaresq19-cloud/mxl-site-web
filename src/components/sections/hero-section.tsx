@@ -87,9 +87,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* On phones the preview is drawn larger and runs off the right edge,
-            so its text stays legible, like a cropped screenshot. */}
-        <div className="relative mt-12 w-[185%] animate-rise duration-1000 delay-700 [--rise-from:1.5rem] sm:mt-14 sm:w-auto md:mt-20">
+        <div className="relative mt-12 animate-rise duration-1000 delay-700 [--rise-from:1.5rem] sm:mt-14 md:mt-20">
           <MagneticFrame>
             <ReportPreview />
           </MagneticFrame>
