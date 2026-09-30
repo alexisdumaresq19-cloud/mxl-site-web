@@ -27,7 +27,7 @@
  * SOFTWARE.
  */
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -99,10 +99,23 @@ function lengthAt({ lengths, times }: Timing, time: number) {
 const penEase = (x: number) =>
   x < 0.08 ? (x / 0.08) ** 2 * 0.04 : 0.04 + (x - 0.08) * (0.96 / 0.92);
 
+/** A filled shape of the real artwork, uncovered by some of the pen's strokes. */
+export type SignatureReveal = {
+  /** The shape's path, in the same coordinates as the signature. */
+  d: string;
+  /** Indexes of the signature's subpaths that uncover it. */
+  strokes: number[];
+};
+
 /**
  * Writes `signature` by hand the first time it is fully in view. Extra
  * subpaths (a crossbar, the dot of an i) are written after a short pen lift;
  * start each one with an absolute "M".
+ *
+ * With `reveal`, the strokes are not drawn themselves: they uncover filled
+ * shapes, such as the letters of a logo, so the artwork appears in writing
+ * order and ends exactly as designed. Each shape only shows through its own
+ * strokes, so a wide pen never uncovers a neighbouring letter early.
  */
 export function Signature({
   signature,
@@ -110,6 +123,8 @@ export function Signature({
   label,
   strokeWidth = 2.6,
   nib = true,
+  duration = DURATION,
+  reveal,
   className,
 }: {
   signature: string;
@@ -119,12 +134,16 @@ export function Signature({
   strokeWidth?: number;
   /** Broad-edged nib (thick and thin strokes) or an even felt pen. */
   nib?: boolean;
+  /** Time to write the whole signature, in milliseconds. */
+  duration?: number;
+  reveal?: SignatureReveal[];
   className?: string;
 }) {
-  const copies = nib ? NIB_COPIES : 1;
+  const id = useId().replace(/[^\w-]/g, "");
   const svg = useRef<SVGSVGElement>(null);
   const measure = useRef<SVGPathElement>(null);
-  const strokes = useRef<(SVGPathElement | null)[]>([]);
+  // Once written, revealed shapes drop their masks and render as plain paths.
+  const [written, setWritten] = useState(false);
   const subpaths = useMemo(
     () =>
       signature
@@ -138,22 +157,29 @@ export function Signature({
     const el = svg.current;
     const path = measure.current;
     if (!el || !path) return;
+    const strokes = Array.from(
+      el.querySelectorAll<SVGPathElement>("path[data-subpath]"),
+    );
     const total = path.getTotalLength();
-    const parts = strokes.current
-      .slice(0, subpaths.length)
-      .map((s) => s?.getTotalLength() ?? 0);
+    const parts = subpaths.map(
+      (_, k) =>
+        strokes
+          .find((s) => s.dataset.subpath === String(k))
+          ?.getTotalLength() ?? 0,
+    );
     const starts = parts.map((_, k) =>
       parts.slice(0, k).reduce((a, b) => a + b, 0),
     );
     const setDrawn = (len: number) => {
-      strokes.current.forEach((s, i) => {
-        if (!s) return;
-        const k = i % subpaths.length;
+      for (const s of strokes) {
+        const k = Number(s.dataset.subpath);
         const part = parts[k];
         const drawn = Math.min(part, Math.max(0, len - starts[k]));
         s.style.strokeDasharray = `${part} ${part + 1}`;
         s.style.strokeDashoffset = String(part - drawn);
-      });
+        // A zero-length dash still paints its round caps, as a dot.
+        s.style.visibility = drawn > 0 ? "visible" : "hidden";
+      }
     };
     setDrawn(0);
 
@@ -163,16 +189,21 @@ export function Signature({
     let timing: Timing | null = null;
     let finished = false;
 
+    const finish = () => {
+      finished = true;
+      frame = 0;
+      setWritten(true);
+    };
+
     const tick = (now: number) => {
       if (!timing) return;
       if (!start) start = now;
-      const p = Math.min(1, (now - start) / DURATION);
+      const p = Math.min(1, (now - start) / duration);
       setDrawn(lengthAt(timing, penEase(p)));
       if (p < 1) {
         frame = requestAnimationFrame(tick);
       } else {
-        finished = true;
-        frame = 0;
+        finish();
       }
     };
 
@@ -182,8 +213,8 @@ export function Signature({
       ([entry]) => {
         if (!entry.isIntersecting || finished || frame || pausedAt) return;
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          finished = true;
           setDrawn(total);
+          finish();
           return;
         }
         timing ??= buildTiming(path);
@@ -213,7 +244,7 @@ export function Signature({
       cancelAnimationFrame(frame);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [subpaths]);
+  }, [subpaths, duration]);
 
   return (
     <svg
@@ -224,33 +255,79 @@ export function Signature({
       className={cn("overflow-visible", className)}
     >
       <path ref={measure} d={signature} fill="none" stroke="none" />
-      {Array.from({ length: copies }, (_, copy) => (
-        <g
-          key={copy}
-          transform={`translate(${copy * NIB_STEP} ${-copy * NIB_STEP})`}
-        >
-          {/* One element per subpath: browsers restart the dash at every
-              moveto, so a single path would show the crossbar before the pen
-              ever got there. */}
-          {subpaths.map((d, k) => (
+      {reveal ? (
+        <>
+          <defs>
+            {reveal.map((shape, i) => (
+              <mask key={i} id={`${id}-${i}`}>
+                {shape.strokes.map((k) => (
+                  <Stroke
+                    key={k}
+                    index={k}
+                    d={subpaths[k]}
+                    width={strokeWidth}
+                    color="white"
+                  />
+                ))}
+              </mask>
+            ))}
+          </defs>
+          {reveal.map((shape, i) => (
             <path
-              key={k}
-              ref={(node) => {
-                strokes.current[copy * subpaths.length + k] = node;
-              }}
-              d={d}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={strokeWidth}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              // Hidden until the first frame sets the dash, so nothing
-              // flashes fully drawn before JavaScript runs.
-              style={{ strokeDasharray: "0 1e4" }}
+              key={i}
+              d={shape.d}
+              fill="currentColor"
+              mask={written ? undefined : `url(#${id}-${i})`}
             />
           ))}
-        </g>
-      ))}
+        </>
+      ) : (
+        Array.from({ length: nib ? NIB_COPIES : 1 }, (_, copy) => (
+          <g
+            key={copy}
+            transform={`translate(${copy * NIB_STEP} ${-copy * NIB_STEP})`}
+          >
+            {subpaths.map((d, k) => (
+              <Stroke
+                key={k}
+                index={k}
+                d={d}
+                width={strokeWidth}
+                color="currentColor"
+              />
+            ))}
+          </g>
+        ))
+      )}
     </svg>
+  );
+}
+
+// One element per subpath: browsers restart the dash at every moveto, so a
+// single path would show the crossbar before the pen ever got there.
+function Stroke({
+  index,
+  d,
+  width,
+  color,
+}: {
+  index: number;
+  d: string;
+  width: number;
+  color: string;
+}) {
+  return (
+    <path
+      data-subpath={index}
+      d={d}
+      fill="none"
+      stroke={color}
+      strokeWidth={width}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      // Hidden until the first frame sets the dash, so nothing flashes fully
+      // drawn before JavaScript runs.
+      style={{ visibility: "hidden" }}
+    />
   );
 }

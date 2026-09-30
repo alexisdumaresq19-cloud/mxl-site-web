@@ -31,7 +31,7 @@ Puis ouvrir <http://localhost:3000>.
 | À propos                     | Texte « Notre expertise » et chiffres animés (5+ ans, 100+ clients, 2 500+ projets)                     |
 | FAQ                          | Accordéon, réponses tirées de l'ancien site                                                             |
 | Contact                      | « Parlons-en. » et formulaire de demande d'estimation, style ForgeUI contact04 (voir plus bas)          |
-| Pied de page                 | Logo MXL tracé à la main comme une signature (animé), liens, Facebook, grand logo MXL en contour        |
+| Pied de page                 | Le vrai logo MXL qui s'écrit comme une signature (animé), liens, Facebook, grand logo MXL en contour    |
 
 Textes, statistiques et certifications viennent de l'ancien site. Les montants et dates des illustrations sont des **exemples** (marqués comme tels) : à remplacer par de vraies données si MXL le souhaite.
 
@@ -48,7 +48,7 @@ src/lib/site.ts                     contenu partagé (services, certifications, 
 src/components/ui/                  composants shadcn et Aceternity
 src/components/sections/            sections de la page et leurs illustrations
 src/components/brand/mxl-logo.tsx   logo MXL vectoriel (SVG)
-src/components/brand/mxl-signature.ts  logo MXL en traits de plume (signature du pied de page)
+src/components/brand/mxl-signature.ts  traits de plume qui dévoilent le logo (signature du pied de page)
 public/brand/                       logo original (PNG) et version SVG
 ```
 
@@ -86,7 +86,7 @@ Variables (voir `.env.example`), à ajouter dans `.env.local` en local et dans V
 
 Adaptations faites dans `src/components/ui/` : import de `cn` corrigé, balises `span` pour pouvoir placer le texte animé dans un titre (sinon erreur d'hydratation), premier mot visible dès le rendu serveur, pas de défilement des mots si l'utilisateur réduit les animations, texture `public/noise.webp` ajoutée. Les fichiers de démo ont été retirés (contenu fictif).
 
-**ui-lab** (licence MIT) : la signature du composant [`footer-signature`](https://github.com/xevrion/ui-lab/blob/main/src/lab/components/footer-signature.tsx), sans le reste de son footer, est dans `src/components/ui/signature.tsx` (avis de licence en tête du fichier). Elle s'écrit quand elle est entièrement visible, ralentit dans les boucles et s'affiche d'un coup si l'utilisateur réduit les animations. Le tracé suit les traits du logo MXL, en blanc, sans l'effet de plume biseautée (trait d'épaisseur égale).
+**ui-lab** (licence MIT) : la signature du composant [`footer-signature`](https://github.com/xevrion/ui-lab/blob/main/src/lab/components/footer-signature.tsx), sans le reste de son footer, est dans `src/components/ui/signature.tsx` (avis de licence en tête du fichier). Elle s'écrit quand elle est entièrement visible, ralentit dans les boucles et s'affiche d'un coup si l'utilisateur réduit les animations. Ajout : un mode « dévoiler » (`reveal`) où les traits de plume servent de masque sur le vrai logo. Chaque lettre apparaît au passage de la plume, dans l'ordre d'écriture, et le résultat final est exactement le logo d'origine.
 
 **ForgeUI** : le registre `@forgeui` est configuré dans `components.json`. `hero-section12`, `logo-cloud02`, `call-to-action03` et `contact04` sont des blocs **Pro** : la hero, la section formations et certifications et la section contact sont des reproductions écrites pour MXL. Pour installer les blocs officiels :
 

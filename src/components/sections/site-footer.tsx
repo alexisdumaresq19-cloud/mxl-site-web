@@ -3,9 +3,10 @@ import { FaFacebookF } from "react-icons/fa6";
 
 import { MXL_LOGO_PATH } from "@/components/brand/mxl-logo";
 import {
-  MXL_SIGNATURE,
-  MXL_SIGNATURE_STROKE,
-  MXL_SIGNATURE_VIEWBOX,
+  MXL_LOGO_PEN,
+  MXL_LOGO_PEN_WIDTH,
+  MXL_LOGO_REVEAL,
+  MXL_LOGO_VIEWBOX,
 } from "@/components/brand/mxl-signature";
 import { Signature } from "@/components/ui/signature";
 import { FACEBOOK_URL, navigation, services } from "@/lib/site";
@@ -33,19 +34,20 @@ export function SiteFooter() {
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-col gap-12 lg:flex-row lg:justify-between">
           <div className="max-w-xs">
-            {/* The logo, signed by hand when the footer comes into view. */}
+            {/* The real logo, signed stroke by stroke when it comes into view. */}
             <Link
               href="/"
               aria-label="Estimation MXL — accueil"
               className="inline-block rounded-sm text-white focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
             >
               <Signature
-                signature={MXL_SIGNATURE}
-                viewBox={MXL_SIGNATURE_VIEWBOX}
-                strokeWidth={MXL_SIGNATURE_STROKE}
-                nib={false}
+                signature={MXL_LOGO_PEN}
+                viewBox={MXL_LOGO_VIEWBOX}
+                strokeWidth={MXL_LOGO_PEN_WIDTH}
+                duration={1100}
+                reveal={MXL_LOGO_REVEAL}
                 label="Estimation MXL"
-                className="block h-10 w-auto"
+                className="block h-8 w-auto"
               />
             </Link>
             <p className="mt-5 text-sm leading-relaxed text-neutral-400">
