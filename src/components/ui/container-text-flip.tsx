@@ -36,8 +36,22 @@ export function ContainerTextFlip({
   const textRef = React.useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    // Update width whenever the word changes (15px of padding on each side)
-    if (textRef.current) setWidth(textRef.current.scrollWidth + 30);
+    // Fit the box to the word plus its own horizontal padding, whenever the
+    // word changes or the text resizes with the viewport.
+    const measure = () => {
+      const text = textRef.current;
+      const box = text?.parentElement;
+      if (!text || !box) return;
+      const style = getComputedStyle(box);
+      setWidth(
+        text.scrollWidth +
+          parseFloat(style.paddingLeft) +
+          parseFloat(style.paddingRight),
+      );
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
   }, [currentWordIndex]);
 
   useEffect(() => {

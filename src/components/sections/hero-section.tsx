@@ -37,15 +37,19 @@ export function HeroSection() {
           >
             <span className="block animate-in duration-700 fade-in fill-mode-both blur-in-6 slide-in-from-bottom-3 delay-100">
               Des estimations{" "}
-              <ContainerTextFlip
-                words={["précises", "détaillées"]}
-                className="rounded-[0.16em] pt-[0.04em] pb-[0.1em] text-[length:inherit] tracking-[inherit] md:text-[length:inherit]"
-              />
+              {/* A small tag beside the headline; on phones it takes its own
+                  line between the two lines of the headline. */}
+              <span className="mt-[0.08em] mb-[0.3em] block leading-none sm:my-0 sm:inline-block sm:align-[0.18em]">
+                <ContainerTextFlip
+                  words={["précises", "détaillées"]}
+                  className="rounded-full px-[0.55em] pt-[0.18em] pb-[0.26em] text-[0.46em] tracking-[-0.02em] md:text-[0.46em]"
+                />
+              </span>
             </span>
             <span className="block animate-in duration-700 fade-in fill-mode-both blur-in-6 slide-in-from-bottom-3 delay-200">
               signées&nbsp;
-              <span className="inline-block h-[0.8em] -rotate-3 animate-stamp rounded-[0.18em] bg-mxl-blue px-[0.24em] pt-[0.19em] align-[-0.08em] shadow-[0_0.2em_0.6em_-0.15em_rgb(27_93_242/0.75),inset_0_1px_0_rgb(255_255_255/0.28)] transition-transform duration-300 hover:rotate-0 motion-reduce:animate-none">
-                <MxlLogo className="block h-[0.42em] w-auto text-white" />
+              <span className="inline-flex h-[1.08em] -rotate-3 animate-stamp items-center rounded-[0.2em] bg-mxl-blue px-[0.3em] align-[-0.2em] shadow-[0_0.3em_1.1em_-0.15em_rgb(27_93_242/0.9),inset_0_1px_0_rgb(255_255_255/0.3)] ring-1 ring-white/15 transition-transform duration-300 ring-inset hover:rotate-0 motion-reduce:animate-none">
+                <MxlLogo className="block h-[0.64em] w-auto text-white" />
               </span>
             </span>
           </h1>

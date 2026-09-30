@@ -25,7 +25,7 @@ Puis ouvrir <http://localhost:3000>.
 | Section                      | Contenu                                                                                                 |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------- |
 | En-tête                      | Logo, méga-menu « Services », liens d'ancre, Facebook, bouton « Demander une estimation », menu mobile  |
-| Hero                         | « Des estimations [précises / détaillées] signées MXL » (mot animé + tuile tampon), aperçu de rapport   |
+| Hero                         | « Des estimations [précises / détaillées] signées MXL » : petit mot animé, grande tuile MXL, aperçu     |
 | Formations et certifications | « Un sinistre à estimer? », bouton vers le contact et bande qui défile, style ForgeUI call-to-action03  |
 | Services                     | « Votre sinistre, [évalué / chiffré / documenté] » et 3 cartes : dommages, coûts, rapport et indemnités |
 | À propos                     | Texte « Notre expertise » et chiffres animés (5+ ans, 100+ clients, 2 500+ projets)                     |
