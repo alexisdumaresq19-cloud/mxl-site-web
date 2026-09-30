@@ -13,7 +13,7 @@ import { ReportPreview } from "./report-preview";
 export function HeroSection() {
   return (
     <section aria-labelledby="hero-title" className="relative overflow-hidden">
-      <div className="mx-auto max-w-6xl px-5 pt-20 pb-12 sm:px-8 md:pt-28">
+      <div className="mx-auto max-w-6xl px-5 pt-10 pb-12 sm:px-8 sm:pt-20 md:pt-28">
         <div className="mx-auto flex max-w-5xl flex-col items-center text-center">
           <div className="animate-rise duration-700 [--rise-from:0.5rem]">
             <a
@@ -33,7 +33,7 @@ export function HeroSection() {
 
           <h1
             id="hero-title"
-            className="mt-7 text-[2.2rem] leading-[1.05] font-bold tracking-[-0.035em] text-balance text-white sm:mt-8 sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5rem]"
+            className="mt-6 text-[clamp(2.25rem,11.2vw,3rem)] leading-[1.05] font-bold tracking-[-0.035em] text-balance text-white sm:mt-8 sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5rem]"
           >
             <span className="block animate-rise duration-700 delay-100">
               Des estimations{" "}
@@ -54,13 +54,13 @@ export function HeroSection() {
             </span>
           </h1>
 
-          <p className="mt-6 max-w-xl animate-rise text-base leading-relaxed text-pretty text-neutral-400 duration-700 delay-300 sm:text-lg">
+          <p className="mt-5 max-w-xl animate-rise text-base leading-relaxed text-pretty text-neutral-400 duration-700 delay-300 sm:mt-6 sm:text-lg">
             Estimateurs après sinistre, nos experts en assurances et en
             sinistres évaluent chaque dommage et produisent des estimations
             précises et détaillées. Rapport précis garanti.
           </p>
 
-          <div className="mt-8 flex w-full animate-rise flex-col items-center justify-center gap-3 duration-700 delay-500 sm:w-auto sm:flex-row">
+          <div className="mt-7 flex w-full animate-rise flex-col items-center justify-center gap-3 duration-700 delay-500 sm:mt-8 sm:w-auto sm:flex-row">
             <Button
               asChild
               variant="brand"
@@ -87,7 +87,9 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="relative mt-14 animate-rise duration-1000 delay-700 [--rise-from:1.5rem] md:mt-20">
+        {/* On phones the preview is drawn larger and runs off the right edge,
+            so its text stays legible, like a cropped screenshot. */}
+        <div className="relative mt-12 w-[185%] animate-rise duration-1000 delay-700 [--rise-from:1.5rem] sm:mt-14 sm:w-auto md:mt-20">
           <MagneticFrame>
             <ReportPreview />
           </MagneticFrame>
