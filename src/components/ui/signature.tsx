@@ -46,6 +46,9 @@ const DURATION = 700;
 const CURVE_DRAG = 10;
 // Samples along the path, enough for a smooth cost curve.
 const SAMPLES = 360;
+// Samples on each side over which a slowdown is spread, so the pen eases
+// into a sharp turn or a pen lift and out of it instead of stopping dead.
+const EASE_SPAN = 10;
 // The slant of the nib, in path units: each copy of the stroke is shifted
 // this much further up and to the right.
 const NIB_STEP = 1.4;
@@ -59,8 +62,7 @@ function buildTiming(path: SVGPathElement): Timing {
     path.getPointAtLength((total * i) / SAMPLES),
   );
   const lengths = new Float32Array(SAMPLES + 1);
-  const times = new Float32Array(SAMPLES + 1);
-  let t = 0;
+  const costs = new Float32Array(SAMPLES + 1);
   for (let i = 1; i <= SAMPLES; i++) {
     lengths[i] = (total * i) / SAMPLES;
     const a = pts[Math.max(0, i - 2)];
@@ -72,7 +74,16 @@ function buildTiming(path: SVGPathElement): Timing {
     // A jump to a new subpath reads as a sharp turn too, so a pen lift gets
     // a natural beat of stillness for free.
     const bend = Math.min(turn, 2 * Math.PI - turn);
-    t += 1 + CURVE_DRAG * bend;
+    costs[i] = 1 + CURVE_DRAG * bend;
+  }
+  const times = new Float32Array(SAMPLES + 1);
+  let t = 0;
+  for (let i = 1; i <= SAMPLES; i++) {
+    const from = Math.max(1, i - EASE_SPAN);
+    const to = Math.min(SAMPLES, i + EASE_SPAN);
+    let sum = 0;
+    for (let j = from; j <= to; j++) sum += costs[j];
+    t += sum / (to - from + 1);
     times[i] = t;
   }
   for (let i = 0; i <= SAMPLES; i++) times[i] /= t;
@@ -115,7 +126,9 @@ export type SignatureReveal = {
  * With `reveal`, the strokes are not drawn themselves: they uncover filled
  * shapes, such as the letters of a logo, so the artwork appears in writing
  * order and ends exactly as designed. Each shape only shows through its own
- * strokes, so a wide pen never uncovers a neighbouring letter early.
+ * strokes, so a wide pen never uncovers a neighbouring letter early. These
+ * strokes have flat ends, so start and end each one just outside its shape:
+ * the letter then fills in from its edge rather than appearing as a dot.
  */
 export function Signature({
   signature,
@@ -267,6 +280,7 @@ export function Signature({
                     d={subpaths[k]}
                     width={strokeWidth}
                     color="white"
+                    cap="butt"
                   />
                 ))}
               </mask>
@@ -310,11 +324,13 @@ function Stroke({
   d,
   width,
   color,
+  cap = "round",
 }: {
   index: number;
   d: string;
   width: number;
   color: string;
+  cap?: "round" | "butt";
 }) {
   return (
     <path
@@ -323,7 +339,7 @@ function Stroke({
       fill="none"
       stroke={color}
       strokeWidth={width}
-      strokeLinecap="round"
+      strokeLinecap={cap}
       strokeLinejoin="round"
       // Hidden until the first frame sets the dash, so nothing flashes fully
       // drawn before JavaScript runs.

@@ -53,6 +53,8 @@
 @theme {
   --animate-marquee: marquee 36s linear infinite;
   --animate-stamp: stamp 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) 0.7s both;
+  --animate-word-in: word-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-word-out: word-out 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 
   /* The track holds its items twice, so -50% lands on an identical frame. */
   @keyframes marquee {
@@ -65,12 +67,10 @@
     0% {
       opacity: 0;
       transform: scale(1.9) rotate(-14deg);
-      filter: blur(6px);
     }
     55% {
       opacity: 1;
       transform: scale(0.94) rotate(1deg);
-      filter: blur(0);
     }
     78% {
       transform: scale(1.03) rotate(-0.5deg);
@@ -78,7 +78,21 @@
     100% {
       opacity: 1;
       transform: none;
-      filter: none;
+    }
+  }
+
+  /* Rolling words: the next word rises into place as the last one leaves. */
+  @keyframes word-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.8em);
+    }
+  }
+
+  @keyframes word-out {
+    to {
+      opacity: 0;
+      transform: translateY(-0.8em);
     }
   }
 }
@@ -195,6 +209,24 @@
   --text-2xl: calc(var(--u) * 24);
   --radius: calc(var(--u) * 10);
   font-size: var(--text-sm);
+}
+
+/* Hero entrance: fade and rise with transform and opacity only, which run off
+ * the main thread and stay smooth while the page loads. Takes tw-animate-css
+ * delay-* and Tailwind duration-* classes. */
+@utility animate-rise {
+  animation: rise var(--tw-animation-duration, var(--tw-duration, 0.7s))
+    cubic-bezier(0.22, 1, 0.36, 1) var(--tw-animation-delay, 0s) both;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--rise-from, 0.75rem));
+  }
 }
 
 /* Fade sections in as they scroll into view, where scroll-driven animations exist. */

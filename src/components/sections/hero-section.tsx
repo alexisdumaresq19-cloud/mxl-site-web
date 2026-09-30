@@ -15,7 +15,7 @@ export function HeroSection() {
     <section aria-labelledby="hero-title" className="relative overflow-hidden">
       <div className="mx-auto max-w-6xl px-5 pt-20 pb-12 sm:px-8 md:pt-28">
         <div className="mx-auto flex max-w-5xl flex-col items-center text-center">
-          <div className="animate-in duration-700 fade-in fill-mode-both slide-in-from-bottom-2">
+          <div className="animate-rise duration-700 [--rise-from:0.5rem]">
             <a
               href="#a-propos"
               className="group inline-flex items-center gap-2 rounded-full bg-neutral-900 py-1 pr-3 pl-1 text-sm text-neutral-300 ring-1 ring-neutral-800 transition-colors hover:bg-neutral-800/70 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
@@ -35,7 +35,7 @@ export function HeroSection() {
             id="hero-title"
             className="mt-7 text-[2.2rem] leading-[1.05] font-bold tracking-[-0.035em] text-balance text-white sm:mt-8 sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5rem]"
           >
-            <span className="block animate-in duration-700 fade-in fill-mode-both blur-in-6 slide-in-from-bottom-3 delay-100">
+            <span className="block animate-rise duration-700 delay-100">
               Des estimations{" "}
               {/* A small tag beside the headline; on phones it takes its own
                   line between the two lines of the headline. */}
@@ -46,7 +46,7 @@ export function HeroSection() {
                 />
               </span>
             </span>
-            <span className="block animate-in duration-700 fade-in fill-mode-both blur-in-6 slide-in-from-bottom-3 delay-200">
+            <span className="block animate-rise duration-700 delay-200">
               signées&nbsp;
               <span className="inline-flex h-[1.08em] -rotate-3 animate-stamp items-center rounded-[0.2em] bg-mxl-blue px-[0.3em] align-[-0.2em] shadow-[0_0.3em_1.1em_-0.15em_rgb(27_93_242/0.9),inset_0_1px_0_rgb(255_255_255/0.3)] ring-1 ring-white/15 transition-transform duration-300 ring-inset hover:rotate-0 motion-reduce:animate-none">
                 <MxlLogo className="block h-[0.64em] w-auto text-white" />
@@ -54,13 +54,13 @@ export function HeroSection() {
             </span>
           </h1>
 
-          <p className="mt-6 max-w-xl animate-in text-base leading-relaxed text-pretty text-neutral-400 duration-700 fade-in fill-mode-both slide-in-from-bottom-3 delay-300 sm:text-lg">
+          <p className="mt-6 max-w-xl animate-rise text-base leading-relaxed text-pretty text-neutral-400 duration-700 delay-300 sm:text-lg">
             Estimateurs après sinistre, nos experts en assurances et en
             sinistres évaluent chaque dommage et produisent des estimations
             précises et détaillées. Rapport précis garanti.
           </p>
 
-          <div className="mt-8 flex w-full animate-in flex-col items-center justify-center gap-3 duration-700 fade-in fill-mode-both slide-in-from-bottom-3 delay-500 sm:w-auto sm:flex-row">
+          <div className="mt-8 flex w-full animate-rise flex-col items-center justify-center gap-3 duration-700 delay-500 sm:w-auto sm:flex-row">
             <Button
               asChild
               variant="brand"
@@ -87,7 +87,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="relative mt-14 animate-in duration-1000 fade-in fill-mode-both slide-in-from-bottom-6 delay-700 md:mt-20">
+        <div className="relative mt-14 animate-rise duration-1000 delay-700 [--rise-from:1.5rem] md:mt-20">
           <MagneticFrame>
             <ReportPreview />
           </MagneticFrame>
