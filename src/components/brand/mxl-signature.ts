@@ -1,11 +1,15 @@
-// Handwritten "MXL": one stroke through the M, the rising arm of the X and
-// the L, whose foot swings back under the letters; the pen then lifts to
-// cross the X. Drawn upright, then slanted about 11 degrees.
+// The MXL logo drawn as pen strokes, in the logo's own proportions (the
+// logo's viewBox scaled by 1/4). One stroke writes the M and runs on down its
+// last diagonal through the X, as the logo does; the pen then lifts for the
+// X's long bar and for the L. Each line follows the outer edge of the logo
+// stroke it stands for, inset by half the pen width, so the tops and the
+// baseline line up with the logo's.
 export const MXL_SIGNATURE =
-  "M 16 80 C 21.2 64 31.6 42 40 30 C 41.2 44 43 60 46 70 C 52.4 58 60.6 42 68 30 " +
-  "C 65.8 46 60.8 66 61 80 C 70.4 68 91.2 44 104 30 C 110.6 22 123.2 14 122.6 22 " +
-  "C 121.6 32 110.6 62 106.6 77 C 104.2 84 112.2 84 122.8 81 C 136.6 77 151 70 157.4 63 " +
-  "C 162.6 57 149 95 109 95 C 77 95 38.4 98 9.2 104 " +
-  "M 81 35 C 83.4 48 88.2 64 93.4 78";
+  "M 7.5 77.2 L 60.4 6.4 L 83.5 36.9 L 53.2 77.2 L 106.5 6.2 L 144 56.3 " +
+  "M 103.1 77.2 L 156.9 5.5 " +
+  "M 202.2 5.5 L 148.7 77.2 L 203.7 77.2";
 
-export const MXL_SIGNATURE_VIEWBOX = "6 13 158 94";
+export const MXL_SIGNATURE_VIEWBOX = "0 0 214.25 81.25";
+
+// The pen width the path was laid out for.
+export const MXL_SIGNATURE_STROKE = 7.5;

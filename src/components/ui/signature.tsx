@@ -34,9 +34,10 @@ import { cn } from "@/lib/utils";
 /* The pen's speed comes from the path itself. The path is sampled once, each
    sample gets a cost from how sharply the line turns there, and time is spent
    in proportion to that cost. So the pen races down straight strokes and
-   slows through loops, the way a hand does. The ink is three copies of the
-   same stroke nudged along a slanted nib, which makes strokes heavier in one
-   direction than the other, like a broad-edged pen. */
+   slows through loops, the way a hand does. By default the ink is three
+   copies of the same stroke nudged along a slanted nib, which makes strokes
+   heavier in one direction than the other, like a broad-edged pen; without
+   the nib it is a single stroke of even width, like a felt pen. */
 
 // A quick, practised signature. It plays once, so it may run past the usual
 // UI budget; any faster and the slowdown through loops stops reading.
@@ -107,13 +108,20 @@ export function Signature({
   signature,
   viewBox,
   label,
+  strokeWidth = 2.6,
+  nib = true,
   className,
 }: {
   signature: string;
   viewBox: string;
   label: string;
+  /** Pen width, in path units. */
+  strokeWidth?: number;
+  /** Broad-edged nib (thick and thin strokes) or an even felt pen. */
+  nib?: boolean;
   className?: string;
 }) {
+  const copies = nib ? NIB_COPIES : 1;
   const svg = useRef<SVGSVGElement>(null);
   const measure = useRef<SVGPathElement>(null);
   const strokes = useRef<(SVGPathElement | null)[]>([]);
@@ -216,7 +224,7 @@ export function Signature({
       className={cn("overflow-visible", className)}
     >
       <path ref={measure} d={signature} fill="none" stroke="none" />
-      {Array.from({ length: NIB_COPIES }, (_, copy) => (
+      {Array.from({ length: copies }, (_, copy) => (
         <g
           key={copy}
           transform={`translate(${copy * NIB_STEP} ${-copy * NIB_STEP})`}
@@ -233,7 +241,7 @@ export function Signature({
               d={d}
               fill="none"
               stroke="currentColor"
-              strokeWidth={2.6}
+              strokeWidth={strokeWidth}
               strokeLinecap="round"
               strokeLinejoin="round"
               // Hidden until the first frame sets the dash, so nothing

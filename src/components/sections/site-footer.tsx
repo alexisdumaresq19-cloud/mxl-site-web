@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { FaFacebookF } from "react-icons/fa6";
 
-import { MXL_LOGO_PATH, MxlLogo } from "@/components/brand/mxl-logo";
+import { MXL_LOGO_PATH } from "@/components/brand/mxl-logo";
 import {
   MXL_SIGNATURE,
+  MXL_SIGNATURE_STROKE,
   MXL_SIGNATURE_VIEWBOX,
 } from "@/components/brand/mxl-signature";
 import { Signature } from "@/components/ui/signature";
@@ -32,23 +33,25 @@ export function SiteFooter() {
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-col gap-12 lg:flex-row lg:justify-between">
           <div className="max-w-xs">
+            {/* The logo, signed by hand when the footer comes into view. */}
             <Link
               href="/"
               aria-label="Estimation MXL — accueil"
               className="inline-block rounded-sm text-white focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
             >
-              <MxlLogo title="Estimation MXL" className="h-7 w-auto" />
+              <Signature
+                signature={MXL_SIGNATURE}
+                viewBox={MXL_SIGNATURE_VIEWBOX}
+                strokeWidth={MXL_SIGNATURE_STROKE}
+                nib={false}
+                label="Estimation MXL"
+                className="block h-10 w-auto"
+              />
             </Link>
-            <p className="mt-4 text-sm leading-relaxed text-neutral-400">
+            <p className="mt-5 text-sm leading-relaxed text-neutral-400">
               Estimateurs après sinistre. Des estimations précises et
               détaillées, rapport précis garanti.
             </p>
-            <Signature
-              signature={MXL_SIGNATURE}
-              viewBox={MXL_SIGNATURE_VIEWBOX}
-              label="Signature d'Estimation MXL"
-              className="mt-5 h-16 w-auto text-mxl-blue-light"
-            />
           </div>
 
           <nav

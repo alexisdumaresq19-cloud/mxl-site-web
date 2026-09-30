@@ -64,7 +64,7 @@ export function ContactForm() {
 
   return (
     <form ref={formRef} action={formAction} className="flex flex-col gap-7">
-      <div className="grid grid-cols-1 gap-7 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-x-5 gap-y-7 sm:gap-x-7">
         <Field id="contact-first-name" label="Prénom" error={errors.firstName}>
           <Input
             id="contact-first-name"
@@ -130,7 +130,7 @@ export function ContactForm() {
         <Textarea
           id="contact-message"
           name="message"
-          placeholder="Décrivez votre sinistre et les dommages constatés…"
+          placeholder="Décrivez votre sinistre…"
           required
           minLength={10}
           maxLength={5000}
