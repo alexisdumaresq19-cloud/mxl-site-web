@@ -24,7 +24,7 @@ Puis ouvrir <http://localhost:3000>.
 
 | Section                      | Contenu                                                                                                 |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------- |
-| En-tête                      | Logo, méga-menu « Services », liens d'ancre, Facebook, bouton, menu hamburger sous 1024 px (tablettes)  |
+| En-tête                      | Barre flottante style ForgeUI header07 : menu « Services » en 2 colonnes, ancres, bouton, menu mobile   |
 | Hero                         | « Des estimations [précises / détaillées] signées MXL » : mot animé en pastille, tuile MXL, aperçu      |
 | Formations et certifications | « Un sinistre à estimer? », bouton vers le contact et bande qui défile, style ForgeUI call-to-action03  |
 | Services                     | « Votre sinistre, [évalué / chiffré / documenté] » et 3 cartes : dommages, coûts, rapport et indemnités |
@@ -88,7 +88,7 @@ Adaptations faites dans `src/components/ui/` : import de `cn` corrigé, balises 
 
 **ui-lab** (licence MIT) : la signature du composant [`footer-signature`](https://github.com/xevrion/ui-lab/blob/main/src/lab/components/footer-signature.tsx), sans le reste de son footer, est dans `src/components/ui/signature.tsx` (avis de licence en tête du fichier). Elle s'écrit quand elle est entièrement visible, ralentit dans les boucles et s'affiche d'un coup si l'utilisateur réduit les animations. Ajout : un mode « dévoiler » (`reveal`) où les traits de plume servent de masque sur le vrai logo. Chaque lettre apparaît au passage de la plume, dans l'ordre d'écriture, et le résultat final est exactement le logo d'origine.
 
-**ForgeUI** : le registre `@forgeui` est configuré dans `components.json`. `hero-section12`, `logo-cloud02`, `call-to-action03` et `contact04` sont des blocs **Pro** : la hero, la section formations et certifications et la section contact sont des reproductions écrites pour MXL. Pour installer les blocs officiels :
+**ForgeUI** : le registre `@forgeui` est configuré dans `components.json`. `header07`, `hero-section12`, `logo-cloud02`, `call-to-action03` et `contact04` sont des blocs **Pro** : l'en-tête, la hero, la section formations et certifications et la section contact sont des reproductions écrites pour MXL. Pour installer les blocs officiels :
 
 1. Générer un jeton sur <https://forgeui.in/docs/cli> (compte ForgeUI Pro requis).
 2. L'ajouter dans `.env.local` : `FORGEUI_API_TOKEN=...` (jamais commité).

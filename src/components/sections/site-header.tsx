@@ -5,20 +5,53 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type FocusEvent,
   type MouseEvent,
-  type ReactNode,
 } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { GraduationCap, ShieldCheck, type LucideIcon } from "lucide-react";
 import { FaFacebookF } from "react-icons/fa6";
+import { HiMenuAlt2, HiX } from "react-icons/hi";
+import { MdKeyboardArrowDown } from "react-icons/md";
 
-import { MXL_LOGO_PATH, MxlLogo } from "@/components/brand/mxl-logo";
-import { Button } from "@/components/ui/button";
-import { certifications, FACEBOOK_URL, navigation, services } from "@/lib/site";
+import { MxlLogo } from "@/components/brand/mxl-logo";
+import { FACEBOOK_URL, navigation, services } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-const panelMotion = {
+type MenuItem = {
+  href: string;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+};
+
+// The Services menu: the three services, then what backs every estimate.
+const serviceItems: MenuItem[] = services.map((service) => ({
+  href: `#${service.id}`,
+  title: service.menuTitle ?? service.title,
+  description: service.summary,
+  icon: service.icon,
+}));
+
+const highlightItems: MenuItem[] = [
+  {
+    href: "#a-propos",
+    title: "Rapport précis garanti",
+    description: "Détaillé, poste par poste.",
+    icon: ShieldCheck,
+  },
+  {
+    href: "#certifications",
+    title: "Formés et certifiés",
+    description: "IICRC, Xactimate, Symbility, CNESST.",
+    icon: GraduationCap,
+  },
+];
+
+type Navigate = (event: MouseEvent<HTMLAnchorElement>) => void;
+
+const heightMotion = {
   initial: { height: 0, opacity: 0 },
   animate: {
     height: "auto",
@@ -38,18 +71,52 @@ const panelMotion = {
   },
 };
 
+const dropdownMotion = {
+  initial: { opacity: 0, y: 8 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] as const },
+  },
+  exit: {
+    opacity: 0,
+    y: 8,
+    transition: { duration: 0.15, ease: [0.4, 0, 1, 1] as const },
+  },
+};
+
 const focusRing =
   "focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none";
 
-const iconTile =
-  "flex size-9 shrink-0 items-center justify-center rounded-md bg-linear-to-b from-neutral-900 to-neutral-950 shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08),inset_0_1px_0_rgb(255_255_255/0.08)]";
+// Dark gradient surface with a hairline inner border, for buttons and icons.
+const raisedSurface =
+  "bg-linear-to-b from-neutral-900 to-neutral-950 shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08),inset_0_1px_0_0_rgb(255_255_255/0.08),0_6px_18px_-12px_rgb(0_0_0/0.5)]";
+
+const ctaButton = cn(
+  "inline-flex items-center justify-center rounded-md px-4 py-2 text-[13px] font-medium whitespace-nowrap text-white transition-colors duration-150 hover:from-neutral-950 hover:to-neutral-950",
+  raisedSurface,
+  focusRing,
+);
+
+function subscribeToScroll(onChange: () => void) {
+  window.addEventListener("scroll", onChange, { passive: true });
+  return () => window.removeEventListener("scroll", onChange);
+}
 
 export function SiteHeader() {
   const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const servicesTrigger = useRef<HTMLButtonElement>(null);
   const lastPointer = useRef<string | null>(null);
   const pendingHash = useRef<string | null>(null);
+
+  // Once the page scrolls, the bar narrows and frosts over the content.
+  const scrolled = useSyncExternalStore(
+    subscribeToScroll,
+    () => window.scrollY > 8,
+    () => false,
+  );
 
   useEffect(() => {
     if (!servicesOpen && !mobileOpen) return;
@@ -70,7 +137,7 @@ export function SiteHeader() {
 
   // Closing a panel cancels an in-flight smooth scroll, so menu links scroll
   // to their section only once the panel has finished closing.
-  const navigate = (event: MouseEvent<HTMLAnchorElement>) => {
+  const navigate: Navigate = (event) => {
     const { hash } = event.currentTarget;
     if (hash && document.querySelector(hash)) {
       event.preventDefault();
@@ -78,6 +145,11 @@ export function SiteHeader() {
       window.history.pushState(null, "", hash);
     }
     closeAll();
+  };
+
+  // Links outside the panels only wait for a panel that is open.
+  const follow: Navigate = (event) => {
+    if (servicesOpen || mobileOpen) navigate(event);
   };
 
   const scrollToPending = () => {
@@ -94,142 +166,140 @@ export function SiteHeader() {
     });
   };
 
-  const onHeaderBlur = (event: FocusEvent<HTMLElement>) => {
+  const onServicesBlur = (event: FocusEvent<HTMLElement>) => {
     if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
       setServicesOpen(false);
     }
   };
 
   return (
-    <header
-      className="sticky top-0 z-50 w-full"
-      onMouseLeave={() => setServicesOpen(false)}
-      onBlur={onHeaderBlur}
-    >
+    <header className="pointer-events-none sticky top-0 z-50 w-full px-2 pt-2">
       <div
         className={cn(
-          "relative border-b border-white/8 bg-black/80 backdrop-blur-md transition-colors",
-          (servicesOpen || mobileOpen) && "bg-black",
+          "pointer-events-auto mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-4 rounded-xl border border-transparent px-4 transition-[max-width,background-color,border-color,backdrop-filter] duration-300 ease-in-out lg:grid lg:grid-cols-[1fr_auto_1fr]",
+          scrolled &&
+            "max-w-6xl border-neutral-800/40 bg-neutral-900/30 backdrop-blur-lg",
         )}
       >
-        <div className="mx-auto grid h-16 max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-5 sm:px-8">
-          <Link
-            href="/"
-            aria-label="Estimation MXL — accueil"
-            onClick={closeAll}
-            className={cn(
-              "justify-self-start rounded-sm text-white transition-opacity hover:opacity-80",
-              focusRing,
-            )}
-          >
-            <MxlLogo title="Estimation MXL" className="h-6 w-auto" />
-          </Link>
+        <Link
+          href="/"
+          aria-label="Estimation MXL — accueil"
+          onClick={closeAll}
+          className={cn(
+            "justify-self-start rounded-sm text-white transition-opacity hover:opacity-80",
+            focusRing,
+          )}
+        >
+          <MxlLogo title="Estimation MXL" className="h-6 w-auto" />
+        </Link>
 
-          <nav aria-label="Navigation principale" className="hidden lg:block">
-            <ul className="flex items-center gap-1">
-              <li>
-                <button
-                  ref={servicesTrigger}
-                  type="button"
-                  aria-expanded={servicesOpen}
-                  aria-controls="menu-services"
-                  onPointerEnter={(event) => {
-                    if (event.pointerType === "mouse") setServicesOpen(true);
-                  }}
-                  onPointerDown={(event) => {
-                    lastPointer.current = event.pointerType;
-                  }}
-                  onClick={() => {
-                    const viaMouse = lastPointer.current === "mouse";
-                    lastPointer.current = null;
-                    setServicesOpen((open) => (viaMouse ? true : !open));
-                  }}
+        <nav aria-label="Navigation principale" className="hidden lg:block">
+          <ul
+            className="relative flex h-fit items-center gap-6"
+            onMouseLeave={() => setServicesOpen(false)}
+          >
+            <li onBlur={onServicesBlur}>
+              <button
+                ref={servicesTrigger}
+                type="button"
+                aria-expanded={servicesOpen}
+                aria-controls="menu-services"
+                onPointerEnter={(event) => {
+                  if (event.pointerType === "mouse") setServicesOpen(true);
+                }}
+                onPointerDown={(event) => {
+                  lastPointer.current = event.pointerType;
+                }}
+                onClick={() => {
+                  const viaMouse = lastPointer.current === "mouse";
+                  lastPointer.current = null;
+                  setServicesOpen((open) => (viaMouse ? true : !open));
+                }}
+                className={cn(
+                  "flex items-center gap-1 rounded-md p-2 text-[13.5px] font-medium transition-colors",
+                  servicesOpen
+                    ? "text-neutral-50"
+                    : "text-neutral-400 hover:text-neutral-50",
+                  focusRing,
+                )}
+              >
+                Services
+                <MdKeyboardArrowDown
+                  aria-hidden="true"
                   className={cn(
-                    "flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                    servicesOpen
-                      ? "text-white"
-                      : "text-neutral-400 hover:text-white",
+                    "mt-1 size-3 transition-transform duration-200",
+                    servicesOpen && "rotate-180",
+                  )}
+                />
+              </button>
+
+              <AnimatePresence onExitComplete={scrollToPending}>
+                {servicesOpen && (
+                  <motion.div
+                    id="menu-services"
+                    {...dropdownMotion}
+                    className="absolute top-9 -left-16 w-150 rounded-lg bg-neutral-950 p-1 shadow-lg ring-1 ring-neutral-800/60"
+                  >
+                    <div className="grid grid-cols-2 divide-x divide-neutral-800/80 rounded-md bg-neutral-950 ring-1 ring-neutral-800/80">
+                      {[serviceItems, highlightItems].map((column) => (
+                        <ul
+                          key={column[0].href}
+                          className="flex flex-col gap-2 p-2"
+                        >
+                          {column.map((item) => (
+                            <li key={item.href}>
+                              <MenuLink item={item} onNavigate={navigate} />
+                            </li>
+                          ))}
+                        </ul>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </li>
+            {navigation.map((item) => (
+              <li key={item.href}>
+                <a
+                  href={item.href}
+                  onPointerEnter={() => setServicesOpen(false)}
+                  className={cn(
+                    "block rounded-md p-2 text-[13.5px] font-medium text-neutral-400 transition-colors hover:text-neutral-50",
                     focusRing,
                   )}
                 >
-                  Services
-                  <ChevronDown
-                    aria-hidden="true"
-                    className={cn(
-                      "size-3.5 transition-transform duration-200",
-                      servicesOpen && "rotate-180",
-                    )}
-                  />
-                </button>
-
-                <AnimatePresence onExitComplete={scrollToPending}>
-                  {servicesOpen && (
-                    <motion.div
-                      id="menu-services"
-                      {...panelMotion}
-                      className="absolute inset-x-0 top-full overflow-hidden border-b border-white/8 bg-black"
-                    >
-                      <ServicesPanel onNavigate={navigate} />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                  {item.label}
+                </a>
               </li>
-              {navigation.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    onPointerEnter={() => setServicesOpen(false)}
-                    className={cn(
-                      "block rounded-md px-3 py-2 text-sm font-medium text-neutral-400 transition-colors hover:text-white",
-                      focusRing,
-                    )}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+            ))}
+          </ul>
+        </nav>
 
-          <div className="col-start-3 flex items-center gap-1.5 justify-self-end">
-            <a
-              href={FACEBOOK_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Estimation MXL sur Facebook"
-              className={cn(
-                "hidden size-9 items-center justify-center rounded-full text-neutral-400 transition-colors hover:bg-white/8 hover:text-white sm:inline-flex",
-                focusRing,
-              )}
-            >
-              <FaFacebookF aria-hidden="true" className="size-3.5" />
-            </a>
-            <Button
-              asChild
-              variant="brand"
-              size="pill-sm"
-              className="hidden sm:inline-flex"
-            >
-              <a href="#contact">Demander une estimation</a>
-            </Button>
-            <button
-              type="button"
-              aria-expanded={mobileOpen}
-              aria-controls="menu-mobile"
-              aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
-              onClick={() => setMobileOpen((open) => !open)}
-              className={cn(
-                "flex size-9 items-center justify-center rounded-lg text-neutral-300 transition-colors hover:text-white lg:hidden",
-                focusRing,
-              )}
-            >
-              {mobileOpen ? (
-                <X aria-hidden="true" className="size-5" />
-              ) : (
-                <Menu aria-hidden="true" className="size-5" />
-              )}
-            </button>
-          </div>
+        <div className="col-start-3 flex items-center gap-3 justify-self-end">
+          <a
+            href="#contact"
+            onClick={follow}
+            className={cn(ctaButton, "hidden min-[375px]:inline-flex")}
+          >
+            Demander une estimation
+          </a>
+          <button
+            type="button"
+            aria-expanded={mobileOpen}
+            aria-controls="menu-mobile"
+            aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            onClick={() => setMobileOpen((open) => !open)}
+            className={cn(
+              "flex items-center justify-center rounded-md p-2 text-white transition-colors duration-100 hover:bg-neutral-900 lg:hidden",
+              focusRing,
+            )}
+          >
+            {mobileOpen ? (
+              <HiX aria-hidden="true" className="size-5" />
+            ) : (
+              <HiMenuAlt2 aria-hidden="true" className="size-5" />
+            )}
+          </button>
         </div>
       </div>
 
@@ -237,28 +307,63 @@ export function SiteHeader() {
         {mobileOpen && (
           <motion.div
             id="menu-mobile"
-            {...panelMotion}
-            className="absolute inset-x-0 top-full overflow-hidden border-b border-white/8 bg-black lg:hidden"
+            {...heightMotion}
+            className="pointer-events-auto absolute inset-x-2 top-full mt-2 overflow-hidden rounded-xl border border-neutral-800/60 bg-black shadow-lg lg:hidden"
           >
-            <nav aria-label="Navigation mobile" className="px-5 pt-2 pb-6">
-              <p className="px-2 pt-2 text-xs font-medium tracking-wide text-neutral-500 uppercase">
-                Services
-              </p>
-              <ul className="mt-2 flex flex-col gap-1 border-b border-white/8 pb-3">
-                {services.map((service) => (
-                  <li key={service.id}>
-                    <ServiceLink service={service} onNavigate={navigate} />
-                  </li>
-                ))}
-              </ul>
+            <nav aria-label="Navigation mobile" className="flex flex-col p-4">
+              <div className="border-b border-neutral-800">
+                <button
+                  type="button"
+                  aria-expanded={mobileServicesOpen}
+                  aria-controls="menu-mobile-services"
+                  onClick={() => setMobileServicesOpen((open) => !open)}
+                  className={cn(
+                    "flex w-full items-center justify-between rounded-sm py-4 text-sm font-medium transition-colors",
+                    mobileServicesOpen
+                      ? "text-neutral-50"
+                      : "text-neutral-400 hover:text-neutral-50",
+                    focusRing,
+                  )}
+                >
+                  Services
+                  <MdKeyboardArrowDown
+                    aria-hidden="true"
+                    className={cn(
+                      "size-5 transition-transform duration-300",
+                      mobileServicesOpen && "rotate-180",
+                    )}
+                  />
+                </button>
+                <AnimatePresence initial={false}>
+                  {mobileServicesOpen && (
+                    <motion.div
+                      id="menu-mobile-services"
+                      {...heightMotion}
+                      className="overflow-hidden"
+                    >
+                      <ul className="flex flex-col gap-1 pb-3">
+                        {[...serviceItems, ...highlightItems].map((item) => (
+                          <li key={item.href}>
+                            <MenuLink
+                              item={item}
+                              onNavigate={navigate}
+                              compact
+                            />
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
               <ul className="flex flex-col">
                 {navigation.map((item) => (
-                  <li key={item.href} className="border-b border-white/8">
+                  <li key={item.href} className="border-b border-neutral-800">
                     <a
                       href={item.href}
                       onClick={navigate}
                       className={cn(
-                        "block px-2 py-3.5 text-sm font-medium text-neutral-300 transition-colors hover:text-white",
+                        "block rounded-sm py-4 text-sm font-medium text-neutral-400 transition-colors hover:text-neutral-50",
                         focusRing,
                       )}
                     >
@@ -266,26 +371,31 @@ export function SiteHeader() {
                     </a>
                   </li>
                 ))}
-              </ul>
-              <div className="mt-5 flex items-center gap-2">
-                <Button asChild variant="brand" size="pill" className="flex-1">
-                  <a href="#contact" onClick={navigate}>
-                    Demander une estimation
+                <li>
+                  <a
+                    href={FACEBOOK_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      "flex items-center justify-between rounded-sm py-4 text-sm font-medium text-neutral-400 transition-colors hover:text-neutral-50",
+                      focusRing,
+                    )}
+                  >
+                    Facebook
+                    <FaFacebookF aria-hidden="true" className="size-4" />
                   </a>
-                </Button>
-                <a
-                  href={FACEBOOK_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Estimation MXL sur Facebook"
-                  className={cn(
-                    "flex size-11 items-center justify-center rounded-full bg-neutral-900 text-neutral-300 ring-1 ring-neutral-800 ring-inset",
-                    focusRing,
-                  )}
-                >
-                  <FaFacebookF aria-hidden="true" className="size-4" />
-                </a>
-              </div>
+                </li>
+              </ul>
+              <a
+                href="#contact"
+                onClick={navigate}
+                className={cn(
+                  ctaButton,
+                  "mt-2 py-2.5 text-sm min-[375px]:hidden",
+                )}
+              >
+                Demander une estimation
+              </a>
             </nav>
           </motion.div>
         )}
@@ -294,216 +404,53 @@ export function SiteHeader() {
   );
 }
 
-function ServiceLink({
-  service,
+function MenuLink({
+  item,
   onNavigate,
+  compact = false,
 }: {
-  service: (typeof services)[number];
-  onNavigate: (event: MouseEvent<HTMLAnchorElement>) => void;
+  item: MenuItem;
+  onNavigate: Navigate;
+  compact?: boolean;
 }) {
-  const Icon = service.icon;
+  const Icon = item.icon;
   return (
     <a
-      href={`#${service.id}`}
+      href={item.href}
       onClick={onNavigate}
       className={cn(
-        "group flex items-start gap-3 rounded-lg p-2 transition-colors hover:bg-white/5",
+        "group block rounded-lg p-2 transition-colors hover:bg-neutral-900 active:bg-neutral-900",
         focusRing,
       )}
     >
-      <span className={iconTile}>
-        <Icon
-          aria-hidden="true"
-          className="size-4 text-neutral-300 transition-colors group-hover:text-mxl-blue-light"
-        />
-      </span>
-      <span className="flex flex-col">
-        <span className="text-sm font-medium text-white">{service.title}</span>
-        <span className="mt-0.5 text-xs text-neutral-400">
-          {service.summary}
+      <span className={cn("flex items-center", compact ? "gap-3" : "gap-2")}>
+        <span
+          className={cn(
+            "flex shrink-0 items-center justify-center rounded-sm",
+            compact ? "size-9" : "size-10",
+            raisedSurface,
+          )}
+        >
+          <Icon
+            aria-hidden="true"
+            strokeWidth={1.75}
+            className={cn(
+              "text-neutral-300 transition-colors group-hover:text-white",
+              compact ? "size-4" : "size-4.5",
+            )}
+          />
+        </span>
+        <span className="flex min-w-0 flex-col gap-0.5">
+          <span className="text-sm font-medium text-neutral-50">
+            {item.title}
+          </span>
+          <span
+            className={cn("text-xs text-neutral-400", compact && "truncate")}
+          >
+            {item.description}
+          </span>
         </span>
       </span>
     </a>
-  );
-}
-
-function ServicesPanel({
-  onNavigate,
-}: {
-  onNavigate: (event: MouseEvent<HTMLAnchorElement>) => void;
-}) {
-  return (
-    <div className="mx-auto grid max-w-6xl grid-cols-12 gap-8 px-8 pt-5 pb-8">
-      <div className="col-span-5">
-        <p className="px-2 text-xs font-medium tracking-wide text-neutral-500 uppercase">
-          Nos services
-        </p>
-        <ul className="mt-2 flex flex-col gap-1">
-          {services.map((service) => (
-            <li key={service.id}>
-              <ServiceLink service={service} onNavigate={onNavigate} />
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <HighlightCard
-        href="#a-propos"
-        title="Rapport précis garanti"
-        description="Chaque estimation est détaillée, poste par poste."
-        onNavigate={onNavigate}
-        className="col-span-4"
-      >
-        <ReportArt />
-      </HighlightCard>
-
-      <HighlightCard
-        href="#certifications"
-        title="Formés et certifiés"
-        description={certifications.map((c) => c.name).join(" · ")}
-        onNavigate={onNavigate}
-        className="col-span-3"
-      >
-        <BadgeArt />
-      </HighlightCard>
-    </div>
-  );
-}
-
-function HighlightCard({
-  href,
-  title,
-  description,
-  onNavigate,
-  className,
-  children,
-}: {
-  href: string;
-  title: string;
-  description: string;
-  onNavigate: (event: MouseEvent<HTMLAnchorElement>) => void;
-  className?: string;
-  children: ReactNode;
-}) {
-  return (
-    <a
-      href={href}
-      onClick={onNavigate}
-      className={cn("group flex flex-col rounded-lg", focusRing, className)}
-    >
-      <span className="flex min-h-32 flex-1 items-center justify-center overflow-hidden rounded-lg bg-neutral-950 text-neutral-200 ring-1 ring-white/8 transition-colors group-hover:ring-white/15">
-        {children}
-      </span>
-      <span className="pt-3 text-sm font-medium text-white">{title}</span>
-      <span className="mt-0.5 text-xs text-neutral-400">{description}</span>
-    </a>
-  );
-}
-
-function ReportArt() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 240 128"
-      className="h-auto w-full max-w-60"
-      fill="none"
-    >
-      <rect
-        x="62"
-        y="14"
-        width="116"
-        height="100"
-        rx="8"
-        className="fill-neutral-900"
-        stroke="currentColor"
-        strokeOpacity="0.35"
-      />
-      {[34, 48, 62, 76].map((y, i) => (
-        <g key={y}>
-          <line
-            x1="76"
-            y1={y}
-            x2={i % 2 ? 132 : 146}
-            y2={y}
-            stroke="currentColor"
-            strokeOpacity="0.25"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-          <line
-            x1="150"
-            y1={y}
-            x2="164"
-            y2={y}
-            stroke="currentColor"
-            strokeOpacity="0.4"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-        </g>
-      ))}
-      <line
-        x1="76"
-        y1="96"
-        x2="164"
-        y2="96"
-        stroke="currentColor"
-        strokeOpacity="0.15"
-      />
-      <g transform="rotate(-8 176 92)">
-        <rect x="148" y="78" width="56" height="28" rx="6" fill="#1b5df2" />
-        <path
-          d={MXL_LOGO_PATH}
-          fill="white"
-          transform="translate(156 84.4) scale(0.0467)"
-        />
-      </g>
-    </svg>
-  );
-}
-
-function BadgeArt() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 180 128"
-      className="h-auto w-full max-w-44"
-      fill="none"
-    >
-      {[
-        { x: 94, y: 30, opacity: 0.15 },
-        { x: 82, y: 38, opacity: 0.3 },
-      ].map((layer) => (
-        <rect
-          key={layer.x}
-          x={layer.x - 30}
-          y={layer.y}
-          width="60"
-          height="60"
-          rx="12"
-          className="fill-neutral-900"
-          stroke="currentColor"
-          strokeOpacity={layer.opacity}
-        />
-      ))}
-      <rect
-        x="40"
-        y="46"
-        width="60"
-        height="60"
-        rx="12"
-        className="fill-neutral-900"
-        stroke="currentColor"
-        strokeOpacity="0.5"
-      />
-      <circle cx="70" cy="76" r="14" stroke="#6b9bff" strokeWidth="2" />
-      <path
-        d="M63 76 L68 81 L77 71"
-        stroke="#6b9bff"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }

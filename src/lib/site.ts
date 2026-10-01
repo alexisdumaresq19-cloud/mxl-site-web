@@ -10,6 +10,9 @@ export const FACEBOOK_URL = "https://www.facebook.com/estimationmxl/";
 export type Service = {
   id: string;
   title: string;
+  /** Shorter title for the header menu, when `title` runs long. */
+  menuTitle?: string;
+  /** One line for the header menu. */
   summary: string;
   icon: LucideIcon;
 };
@@ -20,19 +23,20 @@ export const services: Service[] = [
   {
     id: "evaluation-des-dommages",
     title: "Évaluation des dommages",
-    summary: "Les dommages causés par le sinistre, évalués un à un.",
+    summary: "Chaque dommage, évalué un à un.",
     icon: SearchCheck,
   },
   {
     id: "couts-de-reparation",
     title: "Coûts de réparation ou de remplacement",
-    summary: "Ce qu'il faut pour remettre vos biens à leur état antérieur.",
+    menuTitle: "Coûts de réparation",
+    summary: "Réparer ou remplacer vos biens.",
     icon: Calculator,
   },
   {
     id: "rapport-et-indemnites",
     title: "Rapport et indemnités",
-    summary: "Un rapport précis pour établir les indemnités à verser.",
+    summary: "Pour établir les indemnités à verser.",
     icon: FileCheck2,
   },
 ];
